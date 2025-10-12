@@ -1,0 +1,229 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/affordances/basePagina.xhtml">
+	<f:metadata>
+		<f:viewAction
+			action="#{formControlUsuariosPerfiles.inicializarMenu()}" />
+	</f:metadata>
+	<ui:define name="content">
+		<h:form id="frmPrincipal">
+			<p:growl id="growl" showDetail="true" sticky="true" />
+			<div align="center">
+				<p:outputPanel styleClass="titulo">
+					<p:outputLabel value="ADMINISTRACIÓN DE MENUS" />
+				</p:outputPanel>
+				<p:separator />
+				<h:commandLink value="Exportar Excel">
+					<p:graphicImage name="/images/excel.png" width="24" />
+					<p:dataExporter type="xls" target="@form:tblMenu"
+						fileName="tablaMenu" />
+				</h:commandLink>
+				<p:panel>
+					<p:commandButton
+						actionListener="#{formControlUsuariosPerfiles.inicializarNuevoMenu()}"
+						icon="ui-icon-plus" value="Nuevo Menu"
+						styleClass="rounded-button mr-2 mb-2">
+					</p:commandButton>
+					<p:dataTable var="menu" paginator="true" filterEvent="enter"
+						id="tblMenu" emptyMessage="No existen datos."
+						styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
+						value="#{formControlUsuariosPerfiles.lstAutMenu}">
+						<p:column style="width:2rem" ariaHeaderText="Row Toggler">
+							<p:rowToggler />
+						</p:column>
+						<p:column headerText="Acciones" width="80">
+							<p:panelGrid columns="2" styleClass="ui-noborder"
+								style="width:90%">
+								<p:commandButton icon="ui-icon-pencil" title="Editar"
+									rendered="#{menu.estado eq 'A' ? 'true':'false'}"
+									actionListener="#{formControlUsuariosPerfiles.inicializarActualizarMenu(menu)}"
+									styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+								</p:commandButton>
+								<p:commandButton icon="ui-icon-arrowthick-1-s" title="Inactivar"
+									rendered="#{menu.estado eq 'A' ? 'true':'false'}"
+									actionListener="#{formControlUsuariosPerfiles.inactivarMenu(menu)}"
+									styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+									<p:confirm message="Esta seguro de inactivar el menú?"
+										header="Confirmación" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton icon="ui-icon-arrowthick-1-n" title="Activar"
+									rendered="#{menu.estado eq 'I' ? 'true':'false'}"
+									actionListener="#{formControlUsuariosPerfiles.activarMenu(menu)}"
+									styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+									<p:confirm message="Esta seguro de activar el menú?"
+										header="Confirmación" icon="ui-icon-alert" />
+								</p:commandButton>
+							</p:panelGrid>
+
+						</p:column>
+						<p:column headerText="Nombre" filterMatchMode="contains">
+							<p:outputLabel value="#{menu.nombre}" />
+						</p:column>
+						<p:column headerText="Descripción" filterMatchMode="contains">
+							<p:outputLabel value="#{menu.observacion}" />
+						</p:column>
+
+						<p:rowExpansion>
+							<p:commandButton
+								actionListener="#{formControlUsuariosPerfiles.inicializarNuevoPerfil(menu)}"
+								icon="ui-icon-plus" value="Nuevo Perfil"
+								styleClass="rounded-button mr-2 mb-2" />
+							<p:dataTable var="perfil" paginator="true" filterEvent="enter"
+								sortBy="#{perfil.orden}" id="tblPerfil"
+								emptyMessage="No existen datos."
+								styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
+								value="#{menu.autPerfiles}">
+								<p:column headerText="Acciones" width="80">
+									<p:panelGrid columns="2" styleClass="ui-noborder"
+										style="width:90%">
+										<p:commandButton icon="ui-icon-pencil" title="Editar"
+											rendered="#{perfil.estado eq 'A' ? 'true':'false'}"
+											actionListener="#{formControlUsuariosPerfiles.inicializarActualizarPerfil(perfil)}"
+											styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+										</p:commandButton>
+										<p:commandButton icon="ui-icon-arrowthick-1-s"
+											title="Inactivar"
+											rendered="#{perfil.estado eq 'A' ? 'true':'false'}"
+											actionListener="#{formControlUsuariosPerfiles.inactivarRol(rol)}"
+											styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+											<p:confirm message="Esta seguro de inactivar el rol?"
+												header="Confirmación" icon="ui-icon-alert" />
+										</p:commandButton>
+										<p:commandButton icon="ui-icon-arrowthick-1-n" title="Activar"
+											rendered="#{perfil.estado eq 'I' ? 'true':'false'}"
+											actionListener="#{formControlUsuariosPerfiles.activarRol(rol)}"
+											styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+											<p:confirm message="Esta seguro de activar el rol?"
+												header="Confirmación" icon="ui-icon-alert" />
+										</p:commandButton>
+									</p:panelGrid>
+
+								</p:column>
+								<p:column headerText="Nombre">
+									<p:outputLabel value="#{perfil.nombre}" />
+								</p:column>
+								<p:column headerText="Descripción">
+									<p:outputLabel value="#{perfil.observacion}" />
+								</p:column>
+								<p:column headerText="Ubicación">
+									<p:outputLabel value="#{perfil.url}" />
+								</p:column>
+								<p:column headerText="Orden">
+									<p:outputLabel value="#{perfil.orden}" > <f:convertNumber maxFractionDigits="0" /> </p:outputLabel>
+								</p:column>
+							</p:dataTable>
+						</p:rowExpansion>
+
+					</p:dataTable>
+				</p:panel>
+			</div>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
+					icon="ui-icon-check" />
+				<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+					icon="ui-icon-close" />
+			</p:confirmDialog>
+		</h:form>
+
+		<p:dialog header="Datos Menú" widgetVar="infMenu" id="infMenu"
+			modal="false" position="top" showEffect="fade" hideEffect="fade"
+			resizable="false" width="90%">
+			<h:form id="frmMenu">
+				<div align="center">
+					<p:panelGrid columns="4" styleClass="ui-noborder" style="width:90%">
+						<p:outputLabel value="Nombre" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formControlUsuariosPerfiles.objAutMenu.nombre}" />
+						<p:outputLabel value="Descripcion" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formControlUsuariosPerfiles.objAutMenu.observacion}" />
+						<p:outputLabel value="Orden" style="font-weight: bold;" />
+						<p:spinner min="1"
+							value="#{formControlUsuariosPerfiles.objAutMenu.orden}" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" styleClass="ui-noborder">
+						<p:commandButton value="Actualizar" icon="ui-icon-disk"
+							actionListener="#{formControlUsuariosPerfiles.actualizarMenu()}"
+							rendered="#{!formControlUsuariosPerfiles.blIbgreso}">
+							<p:confirm message="Esta seguro de actualizar la informacion?"
+								header="Confirmación" icon="ui-icon-alert" />
+						</p:commandButton>
+						<p:commandButton value="Ingresar"
+							actionListener="#{formControlUsuariosPerfiles.ingresarMenu()}"
+							rendered="#{formControlUsuariosPerfiles.blIbgreso}"
+							icon="ui-icon-disk">
+							<p:confirm message="Esta seguro de ingresar la informacion?"
+								header="Confirmación" icon="ui-icon-alert" />
+						</p:commandButton>
+					</p:panelGrid>
+
+				</div>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
+						icon="ui-icon-check" />
+					<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+						icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Datos Perfil" widgetVar="infPerfil" id="infPerfil"
+			modal="false" position="top" showEffect="fade" hideEffect="fade"
+			resizable="false" width="90%">
+			<h:form id="frmPerfil">
+				<div align="center">
+					<p:panelGrid columns="4" styleClass="ui-noborder" style="width:90%">
+						<p:outputLabel value="Nombre" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formControlUsuariosPerfiles.objAutPerfile.nombre}" />
+						<p:outputLabel value="Menù" style="font-weight: bold;" />
+						<p:selectOneMenu
+							value="#{formControlUsuariosPerfiles.objAutPerfile.autMenu.codigo}">
+							<f:selectItem itemLabel="Seleccione Menú" />
+							<f:selectItems
+								value="#{formControlUsuariosPerfiles.siMenuActivos()}" />
+						</p:selectOneMenu>
+						<p:outputLabel value="Descripcion" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formControlUsuariosPerfiles.objAutPerfile.observacion}" />
+						<p:outputLabel value="Url" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formControlUsuariosPerfiles.objAutPerfile.url}" />
+						<p:outputLabel value="Icon" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formControlUsuariosPerfiles.objAutPerfile.icon}" />
+						<p:outputLabel value="Orden" style="font-weight: bold;" />
+						<p:spinner min="1"
+							value="#{formControlUsuariosPerfiles.objAutPerfile.orden}" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" styleClass="ui-noborder">
+						<p:commandButton value="Actualizar" icon="ui-icon-disk"
+							actionListener="#{formControlUsuariosPerfiles.actualizarPerfil()}"
+							rendered="#{!formControlUsuariosPerfiles.blIbgreso}">
+							<p:confirm message="Esta seguro de actualizar la informacion?"
+								header="Confirmación" icon="ui-icon-alert" />
+						</p:commandButton>
+						<p:commandButton value="Ingresar"
+							actionListener="#{formControlUsuariosPerfiles.ingresarPerfil()}"
+							rendered="#{formControlUsuariosPerfiles.blIbgreso}"
+							icon="ui-icon-disk">
+							<p:confirm message="Esta seguro de ingresar la informacion?"
+								header="Confirmación" icon="ui-icon-alert" />
+						</p:commandButton>
+					</p:panelGrid>
+
+				</div>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
+						icon="ui-icon-check" />
+					<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+						icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

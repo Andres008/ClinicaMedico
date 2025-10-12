@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" lang="en">
+<h:head>
+
+	<style type="text/css">
+#divContenedor {
+	background-image:
+		url('#{request.contextPath}/modulos/images/#{beanLogin.imagenActual}');
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	height: #{beanLogin.tamPantalla
+}
+;
+}
+.titulo {
+	background-color: #1976D2;
+	color: white;
+	padding: 10px;
+	text-align: center;
+	font-weight: bold;
+	border-radius: 7px
+}
+</style>
+
+
+	<script type="text/javascript">
+    PrimeFaces.locales['es'] = {
+        closeText: 'Cerrar',
+        prevText: 'Anterior',
+        nextText: 'Siguiente',
+        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+        dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+        weekHeader: 'Semana',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: '',
+        timeOnlyTitle: 'Hora',
+        timeText: 'Tiempo',
+        hourText: 'Hora',
+        minuteText: 'Minuto',
+        secondText: 'Segundo',
+        currentText: 'Fecha actual',
+        ampm: false,
+        month: 'Mes',
+        week: 'Semana',
+        day: 'Día',
+        allDayText: 'Todo el día'
+    };
+</script>
+
+	<f:event type="preRenderView"
+		listener="#{controlFormularios.verificarSesion()}" />
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title><ui:insert name="title">ARTEMIS</ui:insert></title>
+	<h:outputScript name="js/nanoscroller.js" library="california-layout" />
+	<h:outputScript name="js/layout.js" library="california-layout" />
+	<ui:insert name="head" />
+</h:head>
+<h:body styleClass="main-body" style="font-size:70%">
+	<h:form id="cierreSesion">
+		<p:idleMonitor timeout="#{beanLogin.tiempoCierreSesion()}"
+			onidle="PF('idleDialog').show()" />
+		<p:dialog header="#{beanLogin.tituloCierreSesion}" resizable="false"
+			widgetVar="idleDialog" modal="true" width="400" closable="false">
+			<p:panel style="text-align:center">
+				<p:commandButton value="Volver a Ingresar"
+					action="#{beanLogin.actionSalirSistema}" />
+			</p:panel>
+
+		</p:dialog>
+	</h:form>
+	<h:form id="frmGrowl">
+		<p:growl id="growl" showDetail="true" sticky="true" />
+	</h:form>
+	<div
+		class="layout-wrapper #{guestPreferences.menuLayout != 'static' ? guestPreferences.menuLayout : null}">
+		<ui:include src="/affordances/megamenu.xhtml" />
+		<ui:include src="/affordances/topbar.xhtml" />
+		<ui:include src="/affordances/sidebar.xhtml" />
+		<ui:include src="/affordances/right-sidebar.xhtml" />
+
+		<div class="layout-main">
+			<div class="route-bar">
+				<div class="route-bar-breadcrumb">
+					<i class="fa fa-home"></i> <span>/Registro Usuarios</span>
+					<ui:insert name="viewname" />
+				</div>
+				<ui:include src="/affordances/route-bar-menu.xhtml" />
+			</div>
+
+			<p:panel id="pnlPrincipal" style="text-align:left">
+				<div class="layout-content" id="divContenedor">
+					<ui:insert name="content" id="divPrincipal" />
+				</div>
+			</p:panel>
+			<ui:include src="/affordances/footer.xhtml" />
+		</div>
+	</div>
+
+	<p:ajaxStatus
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<i class="fa fa-circle-o-notch fa-spin ajax-loader"
+				aria-hidden="true"></i>
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:outputStylesheet name="css/nanoscroller.css"
+		library="california-layout" />
+	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css"
+		library="california-layout" />
+</h:body>
+</html>

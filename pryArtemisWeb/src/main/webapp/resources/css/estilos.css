@@ -1,0 +1,26 @@
+@CHARSET "UTF-8";
+
+.gridClass td {
+    vertical-align: top;
+    
+}
+
+.ui-fileupload-buttonbar {
+	margin: 0px 0px 0px 0px !important;
+	width: 200 px !important;
+	padding: 0px 0px 0px 0px !important;
+	border: none !important;
+	border-style: none;
+}
+
+.ui-fileupload {
+	margin: 0px 0px 0px 0px !important;
+	padding: 0px 0px 0px 0px !important;
+	display: inline-block;
+	border: none;
+}
+
+.ui-fileupload-content {
+	display: none;
+}
+	

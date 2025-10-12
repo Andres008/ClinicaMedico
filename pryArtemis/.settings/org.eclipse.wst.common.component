@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+                
+    
+    
+    <wb-module deploy-name="pryArtemis">
+                                
+        
+        
+        <dependent-module archiveName="pryArtemisModel.jar" deploy-path="/" handle="module:/resource/pryArtemisModel/pryArtemisModel">
+                                                
+            
+            
+            <dependency-type>uses</dependency-type>
+                                            
+        
+        
+        </dependent-module>
+                                
+        
+        
+        <dependent-module archiveName="pryArtemisWeb.war" deploy-path="/" handle="module:/resource/pryArtemisWeb/pryArtemisWeb">
+                                                
+            
+            
+            <dependency-type>uses</dependency-type>
+                                            
+        
+        
+        </dependent-module>
+                
+        <dependent-module archiveName="pryArtemisDs.jar" deploy-path="/" handle="module:/resource/pryArtemisDs/pryArtemisDs">
+                        
+            <dependency-type>uses</dependency-type>
+                    
+        </dependent-module>
+                            
+    
+    
+    </wb-module>
+            
+
+
+</project-modules>

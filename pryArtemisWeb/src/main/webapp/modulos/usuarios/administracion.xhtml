@@ -1,0 +1,215 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/affordances/basePagina.xhtml">
+	<f:metadata>
+		<f:viewAction
+			action="#{formControlUsuariosPerfiles.inicializarUsuarios()}" />
+	</f:metadata>
+	<ui:define name="content">
+		<h:form id="frmPrincipal">
+			<p:growl id="growl" showDetail="true" sticky="true" />
+			<div align="center">
+				<p:outputPanel styleClass="titulo">
+					<p:outputLabel value="ADMINISTRACIÓN DE USUARIOS" />
+				</p:outputPanel>
+				<p:separator />
+				<h:commandLink value="Exportar Excel">
+					<p:graphicImage name="/images/excel.png" width="24" />
+					<p:dataExporter type="xls" target="@form:tblUsuario"
+						fileName="tablaSocios" />
+				</h:commandLink>
+				<p:panel>
+					<p:commandButton
+						actionListener="#{formControlUsuariosPerfiles.inicializarNuevoUsuario()}"
+						icon="ui-icon-plus" value="Nuevo Usuario"
+						styleClass="rounded-button mr-2 mb-2">
+					</p:commandButton>
+					<p:dataTable var="usuario" paginator="true" filterEvent="enter"
+						id="tblUsuario" emptyMessage="No existen datos."
+						styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
+						value="#{formControlUsuariosPerfiles.lstAutUsuario}">
+						<p:column headerText="Acciones" width="80">
+							<p:panelGrid columns="2" styleClass="ui-noborder"
+								style="width:90%">
+								<p:commandButton icon="ui-icon-pencil" title="Editar"
+									rendered="#{usuario.estado eq 'A' ? 'true':'false'}"
+									actionListener="#{formControlUsuariosPerfiles.inicializarActualizarUsuario(usuario)}"
+									styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+								</p:commandButton>
+								<p:commandButton icon="ui-icon-unlocked"
+									title="Restablecer Contraseña"
+									rendered="#{usuario.estado eq 'A' ? 'true':'false'}"
+									actionListener="#{formControlUsuariosPerfiles.restablecerContraseniaUsuario(usuario)}"
+									styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+									<p:confirm
+										message="Esta seguro de restablecer la contraseña del usuario #{usuario.perPersona.apellidos} #{usuario.perPersona.nombres}?"
+										header="Confirmación" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton icon="ui-icon-arrowthick-1-s" title="Inactivar"
+									rendered="#{usuario.estado eq 'A' ? 'true':'false'}"
+									actionListener="#{formControlUsuariosPerfiles.inactivarUsuario(usuario)}"
+									styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+									<p:confirm message="Esta seguro de inactivar el usuario?"
+										header="Confirmación" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton icon="ui-icon-arrowthick-1-n" title="Activar"
+									rendered="#{usuario.estado eq 'I' ? 'true':'false'}"
+									actionListener="#{formControlUsuariosPerfiles.activarUsuario(usuario)}"
+									styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+									<p:confirm message="Esta seguro de activar el usuario?"
+										header="Confirmación" icon="ui-icon-alert" />
+								</p:commandButton>
+							</p:panelGrid>
+
+						</p:column>
+						<p:column headerText="Cédula" filterBy="#{usuario.cedula}"
+							filterMatchMode="contains">
+							<p:outputLabel value="#{usuario.cedula}" />
+						</p:column>
+						<p:column headerText="Apellidos"
+							filterBy="#{usuario.perPersona.apellidos}"
+							filterMatchMode="contains">
+							<p:outputLabel value="#{usuario.perPersona.apellidos}" />
+						</p:column>
+						<p:column headerText="Nombres"
+							filterBy="#{usuario.perPersona.nombres}"
+							filterMatchMode="contains">
+							<p:outputLabel value="#{usuario.perPersona.nombres}" />
+						</p:column>
+						<p:column headerText="Rol">
+							<p:outputLabel value="#{usuario.autRol.nombre}" />
+						</p:column>
+						<p:column headerText="Correo">
+							<p:outputLabel value="#{usuario.perPersona.correo}" />
+						</p:column>
+						<p:column headerText="Estado" width="60">
+							<p:outputLabel
+								value="#{usuario.estado eq 'A' ? 'ACTIVO': 'INACTIVO'}" />
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</div>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
+					icon="ui-icon-check" />
+				<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+					icon="ui-icon-close" />
+			</p:confirmDialog>
+		</h:form>
+
+		<p:dialog header="Datos Usuario" widgetVar="infUsuario"
+			id="infUsuario" modal="false" position="top" showEffect="fade"
+			hideEffect="fade" resizable="false" width="90%">
+			<h:form id="frmUsuarios">
+				<div align="center">
+					<p:panelGrid columns="4" styleClass="ui-noborder" style="width:90%">
+						<p:outputLabel value="Cédula" style="font-weight: bold;" />
+						<p:panelGrid columns="2" styleClass="ui-noborder">
+							<p:inputText
+								value="#{formControlUsuariosPerfiles.objAutUsuario.cedula}"
+								disabled="#{!formControlUsuariosPerfiles.blIbgreso}" size="15" />
+							<p:commandButton value="Buscar" icon="ui-icon-search"
+								actionListener="#{formControlUsuariosPerfiles.buscarPersona()}" />
+						</p:panelGrid>
+						<p:outputLabel value="Correo" style="font-weight: bold;" />
+						<p:inputText disabled="true"
+							value="#{formControlUsuariosPerfiles.objAutUsuario.perPersona.correo}"
+							size="40" />
+						<p:outputLabel value="Apellidos" style="font-weight: bold;" />
+						<p:inputText disabled="true"
+							value="#{formControlUsuariosPerfiles.objAutUsuario.perPersona.apellidos}"
+							size="40" />
+						<p:outputLabel value="Nombre" style="font-weight: bold;" />
+						<p:inputText disabled="true"
+							value="#{formControlUsuariosPerfiles.objAutUsuario.perPersona.nombres}"
+							size="40" />
+						<p:outputLabel value="Rol" style="font-weight: bold;" />
+						<p:selectOneMenu
+							value="#{formControlUsuariosPerfiles.objAutUsuario.autRol.codigo}">
+							<f:selectItem itemLabel="Seleccione Rol" noSelectionOption="true" />
+							<f:selectItems
+								value="#{formControlUsuariosPerfiles.siRolesActivos()}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+					<p:commandButton value="Guardar" update=":frmPrincipal:growl"
+						actionListener="#{formControlUsuariosPerfiles.guardarUsuario()}"
+						rendered="#{formControlUsuariosPerfiles.blIbgreso}"
+						icon="ui-icon-disk">
+						<p:confirm message="Esta seguro de ingresar la informacion?"
+							header="Confirmación" icon="ui-icon-alert" />
+					</p:commandButton>
+				</div>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
+						icon="ui-icon-check" />
+					<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+						icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Datos Personas" widgetVar="infPersonas"
+			id="infPersonas" modal="false" position="top" showEffect="fade"
+			hideEffect="fade" resizable="false" width="90%">
+			<h:form id="frmPersonas">
+				<div align="center">
+					<p:messages id="messages" showDetail="true" closable="true" />
+					<p:panelGrid columns="4" styleClass="ui-noborder" style="width:90%">
+						<p:outputLabel value="Cédula" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formControlUsuariosPerfiles.objPersona.cedula}"
+							disabled="true" size="15" />
+						<p:outputLabel value="Apellidos" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formControlUsuariosPerfiles.objPersona.apellidos}"
+							size="40" />
+						<p:outputLabel value="Nombres" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formControlUsuariosPerfiles.objPersona.nombres}"
+							size="40" />
+						<p:outputLabel value="Correo Electrónico"
+							style="font-weight: bold;" />
+						<p:inputText
+							value="#{formControlUsuariosPerfiles.objPersona.correo}"
+							size="40" />
+						<p:outputLabel value="Telefono" style="font-weight: bold;" />
+						<p:inputText
+							oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+							placeholder="Ingrese un número de telefo"
+							value="#{formControlUsuariosPerfiles.objPersona.telefono}"
+							size="40" />
+						<p:outputLabel value="Celular" style="font-weight: bold;" />
+						<p:inputText
+							oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+							placeholder="Ingrese un número celular"
+							value="#{formControlUsuariosPerfiles.objPersona.celular}"
+							size="40" />
+						<p:outputLabel value="Fecha Nacimiento" style="font-weight: bold;" />
+						<p:inputMask mask="99/99/9999" placeholder="dia/mes/año"
+							value="#{formControlUsuariosPerfiles.objPersona.fechaNacimiento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:inputMask>
+						<p:outputLabel value="Dirección" style="font-weight: bold;" />
+						<p:inputTextarea
+							value="#{formControlUsuariosPerfiles.objPersona.direccion}"
+							size="40" rows="1" autoResize="true" />
+					</p:panelGrid>
+					<p:commandButton value="Guardar"
+						actionListener="#{formControlUsuariosPerfiles.guardarPersona()}">
+						<p:confirm message="Esta seguro de ingresar la informacion?"
+							header="Confirmación" icon="ui-icon-alert" />
+					</p:commandButton>
+				</div>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
+						icon="ui-icon-check" />
+					<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+						icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

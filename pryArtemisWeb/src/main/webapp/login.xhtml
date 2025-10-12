@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title>Iniciar Sesión</title>
+	<style>
+#header {
+	position: fixed;
+	top: -50%;
+	left: -50%;
+	width: 200%;
+	height: 200%;
+	z-index: -110;
+}
+
+#header img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	min-width: 50%;
+	min-height: 50%;
+}
+</style>
+</h:head>
+
+
+
+<h:body styleClass="login-body"
+	onload="#{controladorAcceso.inicializarAcceso()}">
+
+	<div id="header">
+		<p:graphicImage id="img" styleClass="login-icon" width="2100"
+			height="925" name="images/login-background.jpg"
+			library="california-layout" />
+	</div>
+	<div class="login-panel ui-fluid">
+		<div class="ui-g" style="margin-top: 50px;">
+			<div class="ui-g-12 ui-md-8 ui-lg-4"></div>
+			<div class="ui-g-12 ui-md-8 ui-lg-4"></div>
+			<div class="ui-g-12 ui-md-8 ui-lg-4"></div>
+		</div>
+		<h:form>
+			<p:growl id="growl" showDetail="true" sticky="true" />
+			<div class="ui-g" style="margin-top: 60px;">
+				<div class="ui-g-12 ui-md-8 ui-lg-4"></div>
+				<div class="ui-g-12 ui-md-8 ui-lg-4"
+					style="background-color: #dcd7d7; border: 1px groove navy;">
+					<div class="ui-g-12">
+						<p:graphicImage styleClass="login-icon" width="400" height="80"
+							name="images/login-baner-comite.png" library="california-layout" />
+					</div>
+
+					<div class="ui-g-12 ui-lg-12 ui-md-12 logo-container">
+						<div class="login-detail">
+							<p:outputLabel
+								rendered="#{!controladorAcceso.cambiosContrasenia}"
+								value="Bienvenido, por favor utilice el formulario para
+								ingresar al sistema."></p:outputLabel>
+							<p:outputLabel rendered="#{controladorAcceso.cambiosContrasenia}"
+								value="Por su seguridad se requiere que actualice su contraseña."></p:outputLabel>
+						</div>
+					</div>
+					<div class="ui-g-12 ui-lg-12 ui-md-12">
+						<p:outputLabel for="pwd1" styleClass="p-col-fixed"
+							rendered="#{controladorAcceso.cambiosContrasenia}"
+							style="width:100px" value="Contraseña" />
+						<p:password id="pwd1"
+							rendered="#{controladorAcceso.cambiosContrasenia}"
+							value="#{controladorAcceso.objAutUsuario.clave}"
+							placeholder="Contraseña" match="pwd2" label="Password 1"
+							required="true" />
+
+						<h:outputText value="Ingrese su Usuario"
+							rendered="#{!controladorAcceso.cambiosContrasenia}" />
+						<p:inputText placeholder="Usuario"
+							value="#{controladorAcceso.idUsuario}"
+							rendered="#{!controladorAcceso.cambiosContrasenia}" />
+					</div>
+					<div class="ui-g-12 ui-lg-12 ui-md-12">
+						<h:outputText value="Contraseña"
+							rendered="#{!controladorAcceso.cambiosContrasenia}" />
+						<p:password placeholder="Password" feedback="false"
+							validatorMessage="Contraseñas no son iguales"
+							rendered="#{!controladorAcceso.cambiosContrasenia}"
+							value="#{controladorAcceso.clave}" />
+						<p:outputLabel for="pwd2" styleClass="p-col-fixed"
+							rendered="#{controladorAcceso.cambiosContrasenia}"
+							style="width:100px" value="Repita Contraseña" />
+						<p:password id="pwd2"
+							validatorMessage="Contraseñas no son iguales"
+							rendered="#{controladorAcceso.cambiosContrasenia}"
+							value="#{controladorAcceso.objAutUsuario.clave}"
+							placeholder="Repita Contraseña" label="Password 2"
+							required="true" />
+					</div>
+					<div class="ui-g-12 ui-lg-12 ui-md-12 chkbox-container">
+						<p:selectBooleanCheckbox id="remember-me" rendered="false" />
+						<p:outputLabel for="remember-me" value="Recordar Contraseña"
+							rendered="false" />
+					</div>
+					<div class="ui-g-12 ui-lg-12 ui-md-12">
+						<h:commandLink rendered="false">Olvide mi clave de ingreso</h:commandLink>
+					</div>
+					<div class="ui-g-12 ui-lg-12 ui-md-12 button-container">
+						<p:commandButton value="Ingresar" styleClass="turquoise-btn"
+							rendered="#{!controladorAcceso.cambiosContrasenia}"
+							update="@form:growl @form"
+							action="#{controladorAcceso.actionObtenerAcceso}" />
+						<p:commandButton value="Cambiar Contraseña" icon="ui-icon-disk"
+							rendered="#{controladorAcceso.cambiosContrasenia}" update="@form"
+							action="#{controladorAcceso.actualizarContrasenia()}" />
+					</div>
+				</div>
+				<div class="ui-g-12 ui-md-8 ui-lg-4"></div>
+
+			</div>
+		</h:form>
+
+	</div>
+
+	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.scss"
+		library="california-layout" />
+</h:body>
+
+</html>

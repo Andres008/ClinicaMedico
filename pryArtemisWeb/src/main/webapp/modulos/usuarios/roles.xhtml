@@ -1,0 +1,213 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/affordances/basePagina.xhtml">
+	<f:metadata>
+		<f:viewAction
+			action="#{formControlUsuariosPerfiles.inicializarRoles()}" />
+	</f:metadata>
+	<ui:define name="content">
+		<h:form id="frmPrincipal">
+			<p:growl id="growl" showDetail="true" sticky="true" />
+			<div align="center">
+				<p:outputPanel styleClass="titulo">
+					<p:outputLabel value="ADMINISTRACIÓN DE ROLES" />
+				</p:outputPanel>
+				<p:separator />
+				<h:commandLink value="Exportar Excel">
+					<p:graphicImage name="/images/excel.png" width="24" />
+					<p:dataExporter type="xls" target="@form:tblRol"
+						fileName="tablaSocios" />
+				</h:commandLink>
+				<p:panel>
+					<p:commandButton
+						actionListener="#{formControlUsuariosPerfiles.inicializarNuevoRol()}"
+						icon="ui-icon-plus" value="Nuevo Rol"
+						styleClass="rounded-button mr-2 mb-2">
+					</p:commandButton>
+					<p:dataTable var="rol" paginator="true" filterEvent="enter"
+						id="tblRol" emptyMessage="No existen datos."
+						styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
+						value="#{formControlUsuariosPerfiles.lstAutRols}">
+						<p:column style="width:2rem" ariaHeaderText="Row Toggler">
+							<p:rowToggler />
+						</p:column>
+						<p:column headerText="Acciones" width="80">
+							<p:panelGrid columns="2" styleClass="ui-noborder"
+								style="width:90%">
+								<p:commandButton icon="ui-icon-pencil" title="Editar"
+									rendered="#{rol.estado eq 'A' ? 'true':'false'}"
+									actionListener="#{formControlUsuariosPerfiles.inicializarActualizarRol(rol)}"
+									styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+								</p:commandButton>
+								<p:commandButton icon="ui-icon-arrowthick-1-s" title="Inactivar"
+									rendered="#{rol.estado eq 'A' ? 'true':'false'}"
+									actionListener="#{formControlUsuariosPerfiles.inactivarRol(rol)}"
+									styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+									<p:confirm message="Esta seguro de inactivar el rol?"
+										header="Confirmación" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton icon="ui-icon-arrowthick-1-n" title="Activar"
+									rendered="#{rol.estado eq 'I' ? 'true':'false'}"
+									actionListener="#{formControlUsuariosPerfiles.activarRol(rol)}"
+									styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+									<p:confirm message="Esta seguro de activar el rol?"
+										header="Confirmación" icon="ui-icon-alert" />
+								</p:commandButton>
+							</p:panelGrid>
+
+						</p:column>
+						<p:column headerText="Nombre" filterBy="#{rol.nombre}"
+							filterMatchMode="contains">
+							<p:outputLabel value="#{rol.nombre}" />
+						</p:column>
+						<p:column headerText="Descripción" filterBy="#{rol.descripcion}"
+							filterMatchMode="contains">
+							<p:outputLabel value="#{rol.descripcion}" />
+						</p:column>
+						<p:column headerText="Fecha Inicial">
+							<p:outputLabel value="#{rol.fechaInicial}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="es" />
+							</p:outputLabel>
+						</p:column>
+						<p:column headerText="Fecha Inicial">
+							<p:outputLabel value="#{rol.fechaFinal}">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="es" />
+							</p:outputLabel>
+						</p:column>
+
+						<p:rowExpansion>
+							<p:commandButton
+								actionListener="#{formControlUsuariosPerfiles.inicializarNuevoPerfilRol(rol)}"
+								icon="ui-icon-plus" value="Agregar Perfil"
+								styleClass="rounded-button mr-2 mb-2" />
+							<p:dataTable var="perfil" paginator="true" filterEvent="enter"
+								id="tblPerfil" emptyMessage="No existen datos."
+								styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
+								value="#{rol.autRolPerfils}">
+								<p:column headerText="Menu" groupRow="true">
+									<h:outputText
+										style="vertical-align: middle; margin-left: .5rem"
+										value="#{perfil.autPerfile.autMenu.nombre}" />
+								</p:column>
+								<p:column headerText="Acciones" width="80">
+									<p:panelGrid columns="2" styleClass="ui-noborder"
+										style="width:90%">
+										<p:commandButton icon="ui-icon-arrowthick-1-s"
+											title="Inactivar"
+											rendered="#{perfil.estado eq 'A' ? 'true':'false'}"
+											actionListener="#{formControlUsuariosPerfiles.inactivarRolPerfil(perfil)}"
+											styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+											<p:confirm message="Esta seguro de inactivar el rol?"
+												header="Confirmación" icon="ui-icon-alert" />
+										</p:commandButton>
+										<p:commandButton icon="ui-icon-arrowthick-1-n" title="Activar"
+											rendered="#{perfil.estado eq 'I' ? 'true':'false'}"
+											actionListener="#{formControlUsuariosPerfiles.activarRolPerfil(perfil)}"
+											styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+											<p:confirm message="Esta seguro de activar el rol?"
+												header="Confirmación" icon="ui-icon-alert" />
+										</p:commandButton>
+									</p:panelGrid>
+
+								</p:column>
+								<p:column headerText="Nombre" filterMatchMode="contains">
+									<p:outputLabel value="#{perfil.autPerfile.nombre}" />
+								</p:column>
+							</p:dataTable>
+						</p:rowExpansion>
+
+					</p:dataTable>
+				</p:panel>
+			</div>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
+					icon="ui-icon-check" />
+				<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+					icon="ui-icon-close" />
+			</p:confirmDialog>
+		</h:form>
+
+		<p:dialog header="Datos Rol" widgetVar="infRol" id="infRol"
+			modal="false" position="top" showEffect="fade" hideEffect="fade"
+			resizable="false" width="90%">
+			<h:form id="frmRol">
+				<div align="center">
+					<p:panelGrid columns="4" styleClass="ui-noborder" style="width:90%">
+						<p:outputLabel value="Nombre" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formControlUsuariosPerfiles.objAutRol.nombre}" />
+						<p:outputLabel value="Descripcion" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formControlUsuariosPerfiles.objAutRol.descripcion}" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" styleClass="ui-noborder">
+						<p:commandButton value="Actualizar" icon="ui-icon-disk"
+							actionListener="#{formControlUsuariosPerfiles.actualizarRol()}"
+							rendered="#{!formControlUsuariosPerfiles.blIbgreso}">
+							<p:confirm message="Esta seguro de actualizar la informacion?"
+								header="Confirmación" icon="ui-icon-alert" />
+						</p:commandButton>
+						<p:commandButton value="Ingresar"
+							actionListener="#{formControlUsuariosPerfiles.ingresarRol()}"
+							rendered="#{formControlUsuariosPerfiles.blIbgreso}"
+							icon="ui-icon-disk">
+							<p:confirm message="Esta seguro de ingresar la informacion?"
+								header="Confirmación" icon="ui-icon-alert" />
+						</p:commandButton>
+					</p:panelGrid>
+
+				</div>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
+						icon="ui-icon-check" />
+					<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+						icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Datos Perfil" widgetVar="infPerfil" id="infPerfil"
+			modal="false" position="top" showEffect="fade" hideEffect="fade"
+			resizable="false" width="90%">
+			<h:form id="frmPerfil">
+				<div align="center">
+					<p:panelGrid columns="4" styleClass="ui-noborder" style="width:90%">
+						<p:outputLabel value="Seleccione Menu" />
+						<p:selectOneMenu
+							value="#{formControlUsuariosPerfiles.objAutRolPerfil.autPerfile.autMenu.codigo}">
+							<f:selectItem itemLabel="Seleccione Menú" />
+							<f:selectItems
+								value="#{formControlUsuariosPerfiles.siMenuActivos()}" />
+							<p:ajax update="@form" />
+						</p:selectOneMenu>
+						<p:outputLabel value="Seleccione SubMenu" />
+						<p:selectOneMenu
+							value="#{formControlUsuariosPerfiles.objAutRolPerfil.autPerfile.codigo}">
+							<f:selectItem itemLabel="Seleccione Submenú" />
+							<f:selectItems
+								value="#{formControlUsuariosPerfiles.siPerfilActivobyMenu(formControlUsuariosPerfiles.objAutRolPerfil.autPerfile.autMenu)}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+					<p:commandButton value="Ingresar"
+						actionListener="#{formControlUsuariosPerfiles.ingresarRolPerfil()}"
+						icon="ui-icon-disk">
+						<p:confirm message="Esta seguro de ingresar la informacion?"
+							header="Confirmación" icon="ui-icon-alert" />
+					</p:commandButton>
+
+
+				</div>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
+						icon="ui-icon-check" />
+					<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+						icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
