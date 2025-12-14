@@ -10,6 +10,9 @@ import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -521,10 +524,56 @@ public class ModelUtil {
 	/*
 	 * Metodo que permite verificar si una cadena contiene numeros
 	 * 
-	 * */
-	
-	 public static boolean contieneCaracteresNoNumericos(String input) {
-		 return input.matches(".*[^0-9].*");
+	 */
+
+	public static boolean contieneCaracteresNoNumericos(String input) {
+		return input.matches(".*[^0-9].*");
 	}
+
+	 public static String calcularEdadString(Date fechaNacimiento) {
+	        if (fechaNacimiento == null) {
+	            return "";
+	        }
+
+	        // Soportar tanto java.util.Date como java.sql.Date
+	        LocalDate fechaNac = convertirALocalDate(fechaNacimiento);
+
+	        LocalDate hoy = LocalDate.now(ZoneId.systemDefault());
+
+	        if (fechaNac.isAfter(hoy)) {
+	            return "";
+	        }
+
+	        Period periodo = Period.between(fechaNac, hoy);
+
+	        int anios = periodo.getYears();
+	        int meses = periodo.getMonths();
+	        int dias  = periodo.getDays();
+
+	        String textoAnios = formatearUnidad(anios, "año", "años");
+	        String textoMeses = formatearUnidad(meses, "mes", "meses");
+	        String textoDias  = formatearUnidad(dias, "día", "días");
+
+	        return textoAnios + ", " + textoMeses + " y " + textoDias;
+	    }
+
+	    private static LocalDate convertirALocalDate(Date date) {
+	        // Si es java.sql.Date usamos toLocalDate()
+	        if (date instanceof java.sql.Date) {
+	            return ((java.sql.Date) date).toLocalDate();
+	        }
+	        // Si es java.util.Date normal, usamos Instant
+	        return java.time.Instant.ofEpochMilli(date.getTime())
+	                .atZone(ZoneId.systemDefault())
+	                .toLocalDate();
+	    }
+
+	    private static String formatearUnidad(int valor, String singular, String plural) {
+	        if (valor == 1) {
+	            return valor + " " + singular;
+	        } else {
+	            return valor + " " + plural;
+	        }
+	    }
 
 }

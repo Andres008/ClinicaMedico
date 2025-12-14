@@ -16,9 +16,9 @@ public class AutRolPerfil implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="AUT_ROL_PERFIL_CODIGO_GENERATOR", sequenceName="SEQ_AUT_ROL_PERFIL",allocationSize = 1)
+	@SequenceGenerator(name="AUT_ROL_PERFIL_CODIGO_GENERATOR", sequenceName="SEQ_AUT_ROL_PERFIL", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="AUT_ROL_PERFIL_CODIGO_GENERATOR")
-	private long codigo;
+	private Integer codigo;
 
 	private String estado;
 
@@ -43,11 +43,11 @@ public class AutRolPerfil implements Serializable {
 	public AutRolPerfil() {
 	}
 
-	public long getCodigo() {
+	public Integer getCodigo() {
 		return this.codigo;
 	}
 
-	public void setCodigo(long codigo) {
+	public void setCodigo(Integer codigo) {
 		this.codigo = codigo;
 	}
 
@@ -89,12 +89,6 @@ public class AutRolPerfil implements Serializable {
 
 	public void setAutRol(AutRol autRol) {
 		this.autRol = autRol;
-	}
-
-	@Override
-	public String toString() {
-		return "AutRolPerfil [codigo=" + codigo + ", estado=" + estado + ", fechaFinal=" + fechaFinal
-				+ ", fechaInicial=" + fechaInicial + ", autPerfile=" + autPerfile + ", autRol=" + autRol + "]";
 	}
 
 }

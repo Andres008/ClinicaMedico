@@ -80,7 +80,7 @@
 							style="width:100px" value="Contraseña" />
 						<p:password id="pwd1"
 							rendered="#{controladorAcceso.cambiosContrasenia}"
-							value="#{controladorAcceso.objAutUsuario.clave}"
+							value="#{controladorAcceso.objPerMedico.clave}"
 							placeholder="Contraseña" match="pwd2" label="Password 1"
 							required="true" />
 
@@ -103,7 +103,7 @@
 						<p:password id="pwd2"
 							validatorMessage="Contraseñas no son iguales"
 							rendered="#{controladorAcceso.cambiosContrasenia}"
-							value="#{controladorAcceso.objAutUsuario.clave}"
+							value="#{controladorAcceso.objPerMedico.clave}"
 							placeholder="Repita Contraseña" label="Password 2"
 							required="true" />
 					</div>

@@ -19,7 +19,9 @@ public class AutPerfile implements Serializable {
 	@Id
 	@SequenceGenerator(name="AUT_PERFILES_CODIGO_GENERATOR", sequenceName="SEQ_AUT_PERFILES",allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="AUT_PERFILES_CODIGO_GENERATOR")
-	private long codigo;
+	private Integer codigo;
+
+	private String action;
 
 	private String estado;
 
@@ -27,13 +29,11 @@ public class AutPerfile implements Serializable {
 
 	private String nombre;
 
+	private String observacion;
+
 	private BigDecimal orden;
-	
-	private String action;
 
 	private String url;
-	
-	private String observacion;
 
 	//bi-directional many-to-one association to AutMenu
 	@ManyToOne
@@ -47,12 +47,20 @@ public class AutPerfile implements Serializable {
 	public AutPerfile() {
 	}
 
-	public long getCodigo() {
+	public Integer getCodigo() {
 		return this.codigo;
 	}
 
-	public void setCodigo(long codigo) {
+	public void setCodigo(Integer codigo) {
 		this.codigo = codigo;
+	}
+
+	public String getAction() {
+		return this.action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
 	}
 
 	public String getEstado() {
@@ -77,6 +85,14 @@ public class AutPerfile implements Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getObservacion() {
+		return this.observacion;
+	}
+
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
 	}
 
 	public BigDecimal getOrden() {
@@ -123,22 +139,6 @@ public class AutPerfile implements Serializable {
 		autRolPerfil.setAutPerfile(null);
 
 		return autRolPerfil;
-	}
-
-	public String getAction() {
-		return action;
-	}
-
-	public void setAction(String action) {
-		this.action = action;
-	}
-
-	public String getObservacion() {
-		return observacion;
-	}
-
-	public void setObservacion(String observacion) {
-		this.observacion = observacion;
 	}
 
 }

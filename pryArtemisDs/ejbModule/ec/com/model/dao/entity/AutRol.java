@@ -5,51 +5,52 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+
 /**
  * The persistent class for the aut_rol database table.
  * 
  */
 @Entity
-@Table(name = "aut_rol")
-@NamedQuery(name = "AutRol.findAll", query = "SELECT a FROM AutRol a")
+@Table(name="aut_rol")
+@NamedQuery(name="AutRol.findAll", query="SELECT a FROM AutRol a")
 public class AutRol implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "AUT_ROL_CODIGO_GENERATOR", sequenceName = "SEQ_AUT_ROL", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AUT_ROL_CODIGO_GENERATOR")
-	private long codigo;
+	@SequenceGenerator(name="AUT_ROL_CODIGO_GENERATOR", sequenceName="SEQ_AUT_ROL", allocationSize = 1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="AUT_ROL_CODIGO_GENERATOR")
+	private Integer codigo;
 
 	private String descripcion;
 
 	private String estado;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "fecha_final")
+	@Column(name="fecha_final")
 	private Date fechaFinal;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "fecha_inicial")
+	@Column(name="fecha_inicial")
 	private Date fechaInicial;
 
 	private String nombre;
 
-	// bi-directional many-to-one association to AutRolPerfil
-	@OneToMany(mappedBy = "autRol")
+	//bi-directional many-to-one association to AutRolPerfil
+	@OneToMany(mappedBy="autRol")
 	private List<AutRolPerfil> autRolPerfils;
 
-	// bi-directional many-to-one association to AutUsuario
-	@OneToMany(mappedBy = "autRol")
-	private List<AutUsuario> autUsuarios;
+	//bi-directional many-to-one association to PerMedico
+	@OneToMany(mappedBy="autRol")
+	private List<PerMedico> perMedicos;
 
 	public AutRol() {
 	}
 
-	public long getCodigo() {
+	public Integer getCodigo() {
 		return this.codigo;
 	}
 
-	public void setCodigo(long codigo) {
+	public void setCodigo(Integer codigo) {
 		this.codigo = codigo;
 	}
 
@@ -115,32 +116,26 @@ public class AutRol implements Serializable {
 		return autRolPerfil;
 	}
 
-	public List<AutUsuario> getAutUsuarios() {
-		return this.autUsuarios;
+	public List<PerMedico> getPerMedicos() {
+		return this.perMedicos;
 	}
 
-	public void setAutUsuarios(List<AutUsuario> autUsuarios) {
-		this.autUsuarios = autUsuarios;
+	public void setPerMedicos(List<PerMedico> perMedicos) {
+		this.perMedicos = perMedicos;
 	}
 
-	public AutUsuario addAutUsuario(AutUsuario autUsuario) {
-		getAutUsuarios().add(autUsuario);
-		autUsuario.setAutRol(this);
+	public PerMedico addPerMedico(PerMedico perMedico) {
+		getPerMedicos().add(perMedico);
+		perMedico.setAutRol(this);
 
-		return autUsuario;
+		return perMedico;
 	}
 
-	public AutUsuario removeAutUsuario(AutUsuario autUsuario) {
-		getAutUsuarios().remove(autUsuario);
-		autUsuario.setAutRol(null);
+	public PerMedico removePerMedico(PerMedico perMedico) {
+		getPerMedicos().remove(perMedico);
+		perMedico.setAutRol(null);
 
-		return autUsuario;
-	}
-
-	@Override
-	public String toString() {
-		return "AutRol [codigo=" + codigo + ", descripcion=" + descripcion + ", estado=" + estado + ", fechaFinal="
-				+ fechaFinal + ", fechaInicial=" + fechaInicial + ", nombre=" + nombre + "]";
+		return perMedico;
 	}
 
 }

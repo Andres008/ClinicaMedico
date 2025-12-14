@@ -6,7 +6,7 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
-import ec.com.model.dao.entity.LogCategoriaEvento;
+import ec.com.model.dao.entity.LogCategoria;
 import ec.com.model.dao.entity.LogGeneral;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
 import ec.com.model.gestionSistema.Credencial;
@@ -65,7 +65,7 @@ public class ManagerLog {
 	private void generarLog(long idTipoEvento, Credencial credencial, Class clase, String metodo, String detalle) throws Exception {
 		LogGeneral nuevoEvento;
 		nuevoEvento = new LogGeneral();
-		LogCategoriaEvento tipoEvento = null;
+		LogCategoria tipoEvento = null;
 		Date fecha = new Date();
 
 		// buscamos el tipo de evento correspondiente:
@@ -78,10 +78,10 @@ public class ManagerLog {
 		}
 		nuevoEvento.setDireccionIp(credencial.getDireccionIP());
 		nuevoEvento.setFechaEvento(fecha);
-		nuevoEvento.setAutUsuario(credencial.getObjAutUsuario());
+		nuevoEvento.setPerMedico(credencial.getObjPerMedico());
 		nuevoEvento.setMensaje(detalle);
 		nuevoEvento.setMetodo(clase.getCanonicalName() + "[" + metodo + "]");
-		nuevoEvento.setLogCategoriaEvento(tipoEvento);
+		nuevoEvento.setLogCategoria(tipoEvento);
 
 		try {
 			managerDAOSegbecom.insertar(nuevoEvento);
@@ -90,8 +90,8 @@ public class ManagerLog {
 		}
 	}
 
-	public LogCategoriaEvento findByIdLogTiposEvento(long idTipoEvento) throws Exception {
-		LogCategoriaEvento evento = (LogCategoriaEvento) managerDAOSegbecom.findById(LogCategoriaEvento.class,
+	public LogCategoria findByIdLogTiposEvento(long idTipoEvento) throws Exception {
+		LogCategoria evento = (LogCategoria) managerDAOSegbecom.findById(LogCategoria.class,
 				idTipoEvento);
 		return evento;
 	}
@@ -112,8 +112,13 @@ public class ManagerLog {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void generarLogErrorGeneral(Credencial credencial, Class clase, String metodo, String detalle) throws Exception {
-		generarLog(LOG_ERROR_GENERAL, credencial, clase, metodo, detalle);
+	public void generarLogErrorGeneral(Credencial credencial, Class clase, String metodo, String detalle){
+		try {
+			generarLog(LOG_ERROR_GENERAL, credencial, clase, metodo, detalle);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

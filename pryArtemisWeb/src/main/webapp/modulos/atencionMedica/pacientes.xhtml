@@ -1,0 +1,328 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/affordances/basePagina.xhtml">
+	<f:metadata>
+		<f:viewAction action="#{formAtencionMedica.inicializarPacientes()}" />
+	</f:metadata>
+	<ui:define name="content">
+		<h:form id="frmPrincipal">
+			<p:growl id="growl" showDetail="true" sticky="true">
+				<p:autoUpdate />
+			</p:growl>
+			<div align="center">
+				<p:panel rendered="#{formAtencionMedica.pnlPacientes}">
+					<p:outputPanel styleClass="titulo">
+						<p:outputLabel value="ADMINISTRACIÓN DE PACIENTES" />
+					</p:outputPanel>
+					<p:separator />
+					<p:commandButton
+						actionListener="#{formAtencionMedica.inicializarNuevoPaciente()}"
+						icon="ui-icon-plus" value="Nuevo Paciente"
+						styleClass="rounded-button mr-2 mb-2">
+					</p:commandButton>
+					<p:separator />
+					<h:commandLink value="Exportar Excel">
+						<p:graphicImage name="/images/excel.png" width="24" />
+						<p:dataExporter type="xls" target="@form" fileName="tablaSocios" />
+					</h:commandLink>
+
+					<p:dataTable var="usuario" paginator="true" filterEvent="enter"
+						id="tblUsuario" emptyMessage="No existen datos."
+						styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
+						value="#{formAtencionMedica.lstPerPacienteMedico}">
+						<p:column headerText="Acciones" width="80">
+							<p:commandButton icon="ui-icon-person" title="Datos Paciente"
+								actionListener="#{formAtencionMedica.cargarDatosPaciente(usuario)}"
+								styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+							</p:commandButton>
+						</p:column>
+						<p:column headerText="Cédula"
+							filterBy="#{usuario.perPaciente.perPersona.cedula}"
+							filterMatchMode="contains">
+							<p:outputLabel value="#{usuario.perPaciente.perPersona.cedula}" />
+						</p:column>
+						<p:column headerText="Apellidos"
+							filterBy="#{usuario.perPaciente.perPersona.apellidos}"
+							filterMatchMode="contains">
+							<p:outputLabel
+								value="#{usuario.perPaciente.perPersona.apellidos}" />
+						</p:column>
+						<p:column headerText="Nombres"
+							filterBy="#{usuario.perPaciente.perPersona.nombres}"
+							filterMatchMode="contains">
+							<p:outputLabel value="#{usuario.perPaciente.perPersona.nombres}" />
+						</p:column>
+						<p:column headerText="Fecha Nacimiento">
+							<p:outputLabel
+								value="#{usuario.perPaciente.perPersona.fechaNacimiento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</p:outputLabel>
+						</p:column>
+						<p:column headerText="Edad">
+							<p:outputLabel
+								value="#{formAtencionMedica.edadPaciente(usuario.perPaciente.perPersona.fechaNacimiento)}" />
+						</p:column>
+						<p:column headerText="Sexo">
+							<p:outputLabel value="#{usuario.perPaciente.sexo}" />
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+
+				<p:panel rendered="#{formAtencionMedica.pnlDatosPaciente}">
+					<p:outputPanel styleClass="titulo">
+						<p:outputLabel
+							value="DATOS PACIENTE #{formAtencionMedica.objPerPaciente.perPersona.apellidos} #{formAtencionMedica.objPerPaciente.perPersona.nombres}" />
+					</p:outputPanel>
+					<p:separator />
+					<p:commandButton icon="ui-icon-plus" value="Nueva Consulta"
+						actionListener="#{formAtencionMedica.nuevaConsulta()}"
+						styleClass="rounded-button mr-2 mb-2">
+						<p:confirm message="Esta seguro de crear una nueva consulta?"
+							header="Confirmación" icon="ui-icon-alert" />
+					</p:commandButton>
+					<p:separator />
+					<p:tabView>
+						<p:tab title="Datos Personales">
+							<p:panelGrid columns="6" styleClass="ui-noborder">
+								<p:outputLabel value="Cédula" style="font-weight: bold;" />
+								<p:outputLabel
+									value="#{formAtencionMedica.objPerPacienteMedico.perPaciente.perPersona.cedula}" />
+								<p:outputLabel value="Nombres" style="font-weight: bold;" />
+								<p:outputLabel
+									value="#{formAtencionMedica.objPerPacienteMedico.perPaciente.perPersona.apellidos} #{formAtencionMedica.objPerPacienteMedico.perPaciente.perPersona.nombres}" />
+								<p:outputLabel value="Género" style="font-weight: bold;" />
+								<p:outputLabel
+									value="#{formAtencionMedica.objPerPacienteMedico.perPaciente.sexo}" />
+								<p:outputLabel value="Ultima Consulta"
+									style="font-weight: bold;" />
+								<p:outputLabel
+									value="#{formAtencionMedica.objPerPacienteMedico.fechaUltimaConsulta}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</p:outputLabel>
+								<p:outputLabel value="Edad" style="font-weight: bold;" />
+								<p:outputLabel
+									value="#{formAtencionMedica.edadPaciente(formAtencionMedica.objPerPacienteMedico.perPaciente.perPersona.fechaNacimiento)}" />
+								<p:outputLabel value="Dirección" style="font-weight: bold;" />
+								<p:outputLabel
+									value="#{formAtencionMedica.objPerPacienteMedico.perPaciente.perPersona.direccion}" />
+								<p:outputLabel value="Teléfono" style="font-weight: bold;" />
+								<p:outputLabel
+									value="#{formAtencionMedica.objPerPacienteMedico.perPaciente.perPersona.celular}" />
+								<p:outputLabel value="Correo Electrónico"
+									style="font-weight: bold;" />
+								<p:outputLabel
+									value="#{formAtencionMedica.objPerPacienteMedico.perPaciente.perPersona.correo}" />
+
+							</p:panelGrid>
+						</p:tab>
+						<p:tab title="Patologías">
+							<p:dataTable var="dato" paginator="true" filterEvent="enter"
+								id="tblPatologia" emptyMessage="No existen datos."
+								styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
+								value="#{formAtencionMedica.objPerPacienteMedico.perPaciente.perPatologias}">
+								<p:column headerText="Tipo Patología"
+									sortBy="#{dato.perTipoPatologia.tipoPatologia}"
+									filterBy="#{dato.perTipoPatologia.tipoPatologia}"
+									filterMatchMode="contains">
+									<p:outputLabel value="#{dato.perTipoPatologia.tipoPatologia}" />
+								</p:column>
+								<p:column headerText="Descripción">
+									<p:outputLabel value="#{dato.descripcion}" />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+						<p:tab title="Consultas Realizadas">
+							<p:dataTable var="dato" paginator="true" filterEvent="enter"
+								id="tblConsultas" emptyMessage="No existen datos."
+								styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
+								value="#{formAtencionMedica.objPerPacienteMedico.perConsultas}">
+								<p:column headerText="Acciones" width="80">
+									<p:commandButton icon="ui-icon-document" title="Ver receta"
+										actionListener="#{formAtencionMedica.reporteReceta(dato)}"
+										styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+									</p:commandButton>
+								</p:column>
+								<p:column headerText="Fecha Consulta">
+									<p:outputLabel value="#{dato.fecha}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</p:outputLabel>
+								</p:column>
+								<p:column headerText="Motivo">
+									<p:outputLabel value="#{dato.motivo}" />
+								</p:column>
+								<p:column headerText="Observación">
+									<p:outputLabel value="#{dato.observacion}" />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+					</p:tabView>
+				</p:panel>
+
+				<p:panel rendered="#{formAtencionMedica.pnlConsulta}">
+					<p:commandButton icon="ui-icon-disk" value="Finalizar Consulta"
+						actionListener="#{formAtencionMedica.guardarAtencion()}"
+						styleClass="rounded-button mr-2 mb-2">
+						<p:confirm message="Esta seguro de finalizar la consulta?"
+							header="Confirmación" icon="ui-icon-alert" />
+					</p:commandButton>
+					<p:separator />
+					<p:tabView>
+						<p:tab title="Examenes Complementarios"></p:tab>
+						<p:tab title="Receta">
+							<p:panelGrid columns="5" styleClass="ui-noborder">
+								<p:outputLabel value="Medicamente" style="font-weight: bold;" />
+								<p:inputTextarea
+									value="#{formAtencionMedica.objPerReceta.medicamento}" rows="1"
+									autoResize="true" />
+								<p:outputLabel value="Indicación" style="font-weight: bold;" />
+								<p:inputTextarea rows="1" autoResize="true"
+									value="#{formAtencionMedica.objPerReceta.indicacion}" />
+								<p:commandButton icon="ui-icon-plus" value="Agregar"
+									actionListener="#{formAtencionMedica.agregarMedicamento()}"
+									styleClass="rounded-button mr-2 mb-2" />
+							</p:panelGrid>
+							<p:separator />
+							<p:commandButton icon="ui-icon-plus" value="Ver Receta"
+								actionListener="#{formAtencionMedica.reporteReceta(formAtencionMedica.objPerConsulta)}"
+								styleClass="rounded-button mr-2 mb-2" />
+							<p:separator />
+							<p:dataTable var="dato" paginator="true" filterEvent="enter"
+								id="tblConsultas" emptyMessage="No existen datos."
+								styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
+								value="#{formAtencionMedica.objPerConsulta.perRecetas}">
+								<p:column headerText="Acciones" width="80">
+									<p:commandButton icon="ui-icon-trash" title="Datos Paciente"
+										actionListener="#{formAtencionMedica.eliminarReceta(dato)}"
+										styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+									</p:commandButton>
+								</p:column>
+								<p:column headerText="Medicamento">
+									<p:outputLabel value="#{dato.medicamento}" />
+								</p:column>
+								<p:column headerText="Indicación">
+									<p:outputLabel value="#{dato.indicacion}" />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+					</p:tabView>
+				</p:panel>
+			</div>
+		</h:form>
+		<p:dialog header="Datos Paciente" widgetVar="infUsuario"
+			id="infUsuario" modal="false" position="top" showEffect="fade"
+			hideEffect="fade" resizable="false" width="90%">
+			<h:form id="frmUsuarios">
+				<div align="center">
+					<p:panelGrid columns="4" styleClass="ui-noborder" style="width:90%">
+						<p:outputLabel value="Cédula" style="font-weight: bold;" />
+						<p:panelGrid columns="2" styleClass="ui-noborder">
+							<p:inputText
+								value="#{formAtencionMedica.objPerPaciente.perPersona.cedula}"
+								disabled="#{!formAtencionMedica.blIbgreso}" size="15" />
+							<p:commandButton value="Buscar" icon="ui-icon-search"
+								actionListener="#{formAtencionMedica.buscarPersona()}" />
+						</p:panelGrid>
+						<p:outputLabel value="Apellidos" style="font-weight: bold;" />
+						<p:inputText disabled="true"
+							value="#{formAtencionMedica.objPerPaciente.perPersona.apellidos}"
+							size="40" />
+						<p:outputLabel value="Nombre" style="font-weight: bold;" />
+						<p:inputText disabled="true"
+							value="#{formAtencionMedica.objPerPaciente.perPersona.nombres}"
+							size="40" />
+						<p:outputLabel value="Sexo" style="font-weight: bold;" />
+						<p:selectOneMenu value="#{formAtencionMedica.objPerPaciente.sexo}">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Seleccione Sexo" />
+							<f:selectItem itemLabel="Masculino" itemValue="Masculino" />
+							<f:selectItem itemLabel="Femenino" itemValue="Femenino" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+					<p:commandButton value="Guardar" update=":frmPrincipal:growl"
+						actionListener="#{formAtencionMedica.guardarPaciente()}"
+						icon="ui-icon-disk">
+						<p:confirm message="Esta seguro de ingresar la informacion?"
+							header="Confirmación" icon="ui-icon-alert" />
+					</p:commandButton>
+				</div>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
+						icon="ui-icon-check" />
+					<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+						icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+		</p:dialog>
+		<p:dialog header="Datos Personas" widgetVar="infPersonas"
+			id="infPersonas" modal="false" position="top" showEffect="fade"
+			hideEffect="fade" resizable="false" width="90%">
+			<h:form id="frmPersonas">
+				<div align="center">
+					<p:messages id="messages" showDetail="true" closable="true" />
+					<p:panelGrid columns="4" styleClass="ui-noborder" style="width:90%">
+						<p:outputLabel value="Cédula" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formAtencionMedica.formControlUsuariosPerfiles.objPersona.cedula}"
+							disabled="true" size="15" />
+						<p:outputLabel value="Apellidos" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formAtencionMedica.formControlUsuariosPerfiles.objPersona.apellidos}"
+							size="40" />
+						<p:outputLabel value="Nombres" style="font-weight: bold;" />
+						<p:inputText
+							value="#{formAtencionMedica.formControlUsuariosPerfiles.objPersona.nombres}"
+							size="40" />
+						<p:outputLabel value="Correo Electrónico"
+							style="font-weight: bold;" />
+						<p:inputText
+							value="#{formAtencionMedica.formControlUsuariosPerfiles.objPersona.correo}"
+							size="40" />
+						<p:outputLabel value="Telefono" style="font-weight: bold;" />
+						<p:inputText
+							oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+							placeholder="Ingrese un número de telefo"
+							value="#{formAtencionMedica.formControlUsuariosPerfiles.objPersona.telefono}"
+							size="40" />
+						<p:outputLabel value="Celular" style="font-weight: bold;" />
+						<p:inputText
+							oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+							placeholder="Ingrese un número celular"
+							value="#{formAtencionMedica.formControlUsuariosPerfiles.objPersona.celular}"
+							size="40" />
+						<p:outputLabel value="Fecha Nacimiento" style="font-weight: bold;" />
+						<p:inputMask mask="99/99/9999" placeholder="dia/mes/año"
+							value="#{formAtencionMedica.formControlUsuariosPerfiles.objPersona.fechaNacimiento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:inputMask>
+						<p:outputLabel value="Dirección" style="font-weight: bold;" />
+						<p:inputTextarea
+							value="#{formAtencionMedica.formControlUsuariosPerfiles.objPersona.direccion}"
+							size="40" rows="1" autoResize="true" />
+					</p:panelGrid>
+					<p:commandButton value="Guardar"
+						actionListener="#{formAtencionMedica.formControlUsuariosPerfiles.guardarPersona()}">
+						<p:confirm message="Esta seguro de ingresar la informacion?"
+							header="Confirmación" icon="ui-icon-alert" />
+					</p:commandButton>
+				</div>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Si" styleClass="ui-confirmdialog-yes"
+						icon="ui-icon-check" />
+					<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+						icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Adjunto" widgetVar="dlgReporte" modal="true"
+			position="top" width="85%" resizable="false" closable="true">
+			<h:form id="frmReporte">
+				<p:media cache="false" value="#{formAtencionMedica.report}"
+					width="85%" height="500" player="pdf"></p:media>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

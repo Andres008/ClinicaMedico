@@ -16,9 +16,9 @@ public class LogGeneral implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="LOG_GENERAL_CODIGO_GENERATOR", sequenceName="SEQ_LOG_GENERAL",allocationSize = 1)
+	@SequenceGenerator(name="LOG_GENERAL_CODIGO_GENERATOR", sequenceName="SEQ_LOG_GENERAL", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="LOG_GENERAL_CODIGO_GENERATOR")
-	private long codigo;
+	private Integer codigo;
 
 	@Column(name="direccion_ip")
 	private String direccionIp;
@@ -31,24 +31,24 @@ public class LogGeneral implements Serializable {
 
 	private String metodo;
 
-	//bi-directional many-to-one association to AutUsuario
+	//bi-directional many-to-one association to PerMedico
 	@ManyToOne
-	@JoinColumn(name="cedula_socio")
-	private AutUsuario autUsuario;
+	@JoinColumn(name="codigo_medico")
+	private PerMedico perMedico;
 
-	//bi-directional many-to-one association to LogCategoriaEvento
+	//bi-directional many-to-one association to LogCategoria
 	@ManyToOne
-	@JoinColumn(name="id_categoria")
-	private LogCategoriaEvento logCategoriaEvento;
+	@JoinColumn(name="codigo_log_categoria")
+	private LogCategoria logCategoria;
 
 	public LogGeneral() {
 	}
 
-	public long getCodigo() {
+	public Integer getCodigo() {
 		return this.codigo;
 	}
 
-	public void setCodigo(long codigo) {
+	public void setCodigo(Integer codigo) {
 		this.codigo = codigo;
 	}
 
@@ -84,20 +84,20 @@ public class LogGeneral implements Serializable {
 		this.metodo = metodo;
 	}
 
-	public AutUsuario getAutUsuario() {
-		return this.autUsuario;
+	public PerMedico getPerMedico() {
+		return this.perMedico;
 	}
 
-	public void setAutUsuario(AutUsuario autUsuario) {
-		this.autUsuario = autUsuario;
+	public void setPerMedico(PerMedico perMedico) {
+		this.perMedico = perMedico;
 	}
 
-	public LogCategoriaEvento getLogCategoriaEvento() {
-		return this.logCategoriaEvento;
+	public LogCategoria getLogCategoria() {
+		return this.logCategoria;
 	}
 
-	public void setLogCategoriaEvento(LogCategoriaEvento logCategoriaEvento) {
-		this.logCategoriaEvento = logCategoriaEvento;
+	public void setLogCategoria(LogCategoria logCategoria) {
+		this.logCategoria = logCategoria;
 	}
 
 }

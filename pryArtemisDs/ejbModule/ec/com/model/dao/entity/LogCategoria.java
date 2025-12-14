@@ -6,37 +6,38 @@ import java.util.List;
 
 
 /**
- * The persistent class for the log_categoria_eventos database table.
+ * The persistent class for the log_categoria database table.
  * 
  */
 @Entity
-@Table(name="log_categoria_eventos")
-@NamedQuery(name="LogCategoriaEvento.findAll", query="SELECT l FROM LogCategoriaEvento l")
-public class LogCategoriaEvento implements Serializable {
+@Table(name="log_categoria")
+@NamedQuery(name="LogCategoria.findAll", query="SELECT l FROM LogCategoria l")
+public class LogCategoria implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="LOG_CATEGORIA_EVENTOS_ID_GENERATOR", sequenceName="SEQ_LOG_CATEGORIA_EVENTOS",allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="LOG_CATEGORIA_EVENTOS_ID_GENERATOR")
-	private long id;
+	@SequenceGenerator(name="LOG_CATEGORIA_CODIGOLOGCATEGORIA_GENERATOR", sequenceName="SEQ_LOG_CATEGORIA", allocationSize = 1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="LOG_CATEGORIA_CODIGOLOGCATEGORIA_GENERATOR")
+	@Column(name="codigo_log_categoria")
+	private long codigoLogCategoria;
 
 	private String descripcion;
 
 	private String nombre;
 
 	//bi-directional many-to-one association to LogGeneral
-	@OneToMany(mappedBy="logCategoriaEvento")
+	@OneToMany(mappedBy="logCategoria")
 	private List<LogGeneral> logGenerals;
 
-	public LogCategoriaEvento() {
+	public LogCategoria() {
 	}
 
-	public long getId() {
-		return this.id;
+	public long getCodigoLogCategoria() {
+		return this.codigoLogCategoria;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setCodigoLogCategoria(long codigoLogCategoria) {
+		this.codigoLogCategoria = codigoLogCategoria;
 	}
 
 	public String getDescripcion() {
@@ -65,14 +66,14 @@ public class LogCategoriaEvento implements Serializable {
 
 	public LogGeneral addLogGeneral(LogGeneral logGeneral) {
 		getLogGenerals().add(logGeneral);
-		logGeneral.setLogCategoriaEvento(this);
+		logGeneral.setLogCategoria(this);
 
 		return logGeneral;
 	}
 
 	public LogGeneral removeLogGeneral(LogGeneral logGeneral) {
 		getLogGenerals().remove(logGeneral);
-		logGeneral.setLogCategoriaEvento(null);
+		logGeneral.setLogCategoria(null);
 
 		return logGeneral;
 	}

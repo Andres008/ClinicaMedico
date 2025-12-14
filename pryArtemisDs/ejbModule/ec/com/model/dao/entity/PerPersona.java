@@ -3,6 +3,7 @@ package ec.com.model.dao.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -16,6 +17,8 @@ public class PerPersona implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@SequenceGenerator(name="PER_PERSONAS_CEDULA_GENERATOR", sequenceName="SEQ_PER_PERSONAS", allocationSize = 1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="PER_PERSONAS_CEDULA_GENERATOR")
 	private String cedula;
 
 	private String apellidos;
@@ -34,9 +37,13 @@ public class PerPersona implements Serializable {
 
 	private String telefono;
 
-	//bi-directional one-to-one association to AutUsuario
+	//bi-directional many-to-one association to PerMedico
+	@OneToMany(mappedBy="perPersona")
+	private List<PerMedico> perMedicos;
+
+	//bi-directional one-to-one association to PerPaciente
 	@OneToOne(mappedBy="perPersona")
-	private AutUsuario autUsuario;
+	private PerPaciente perPaciente;
 
 	public PerPersona() {
 	}
@@ -105,12 +112,34 @@ public class PerPersona implements Serializable {
 		this.telefono = telefono;
 	}
 
-	public AutUsuario getAutUsuario() {
-		return this.autUsuario;
+	public List<PerMedico> getPerMedicos() {
+		return this.perMedicos;
 	}
 
-	public void setAutUsuario(AutUsuario autUsuario) {
-		this.autUsuario = autUsuario;
+	public void setPerMedicos(List<PerMedico> perMedicos) {
+		this.perMedicos = perMedicos;
+	}
+
+	public PerMedico addPerMedico(PerMedico perMedico) {
+		getPerMedicos().add(perMedico);
+		perMedico.setPerPersona(this);
+
+		return perMedico;
+	}
+
+	public PerMedico removePerMedico(PerMedico perMedico) {
+		getPerMedicos().remove(perMedico);
+		perMedico.setPerPersona(null);
+
+		return perMedico;
+	}
+
+	public PerPaciente getPerPaciente() {
+		return this.perPaciente;
+	}
+
+	public void setPerPaciente(PerPaciente perPaciente) {
+		this.perPaciente = perPaciente;
 	}
 
 }

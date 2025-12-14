@@ -5,20 +5,21 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+
 /**
  * The persistent class for the aut_menu database table.
  * 
  */
 @Entity
-@Table(name = "aut_menu")
-@NamedQuery(name = "AutMenu.findAll", query = "SELECT a FROM AutMenu a")
+@Table(name="aut_menu")
+@NamedQuery(name="AutMenu.findAll", query="SELECT a FROM AutMenu a")
 public class AutMenu implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "AUT_MENU_CODIGO_GENERATOR", sequenceName = "SEQ_AUT_MENU", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AUT_MENU_CODIGO_GENERATOR")
-	private long codigo;
+	@SequenceGenerator(name="AUT_MENU_CODIGO_GENERATOR", sequenceName="SEQ_AUT_MENU", allocationSize = 1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="AUT_MENU_CODIGO_GENERATOR")
+	private Integer codigo;
 
 	private String estado;
 
@@ -28,18 +29,18 @@ public class AutMenu implements Serializable {
 
 	private BigDecimal orden;
 
-	// bi-directional many-to-one association to AutPerfile
-	@OneToMany(mappedBy = "autMenu")
+	//bi-directional many-to-one association to AutPerfile
+	@OneToMany(mappedBy="autMenu")
 	private List<AutPerfile> autPerfiles;
 
 	public AutMenu() {
 	}
 
-	public long getCodigo() {
+	public Integer getCodigo() {
 		return this.codigo;
 	}
 
-	public void setCodigo(long codigo) {
+	public void setCodigo(Integer codigo) {
 		this.codigo = codigo;
 	}
 
@@ -95,12 +96,6 @@ public class AutMenu implements Serializable {
 		autPerfile.setAutMenu(null);
 
 		return autPerfile;
-	}
-
-	@Override
-	public String toString() {
-		return "AutMenu [codigo=" + codigo + ", estado=" + estado + ", nombre=" + nombre + ", observacion="
-				+ observacion + ", orden=" + orden + "]";
 	}
 
 }

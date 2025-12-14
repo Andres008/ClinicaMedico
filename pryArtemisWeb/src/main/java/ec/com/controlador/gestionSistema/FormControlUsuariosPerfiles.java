@@ -14,7 +14,7 @@ import ec.com.model.dao.entity.AutMenu;
 import ec.com.model.dao.entity.AutPerfile;
 import ec.com.model.dao.entity.AutRol;
 import ec.com.model.dao.entity.AutRolPerfil;
-import ec.com.model.dao.entity.AutUsuario;
+import ec.com.model.dao.entity.PerMedico;
 import ec.com.model.dao.entity.PerPersona;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
 import ec.com.model.gestionUsuarios.ManagerGestionUsuarios;
@@ -44,14 +44,14 @@ public class FormControlUsuariosPerfiles implements Serializable {
 	@EJB
 	private ManagerLog managerLog;
 
-	private AutUsuario objAutUsuario;
+	private PerMedico objPerMedico;
 
 	private boolean blIbgreso;
 
 	private List<AutRol> lstAutRols;
 	private AutRol objAutRol;
 
-	private List<AutUsuario> lstAutUsuario;
+	private List<PerMedico> lstPerMedico;
 
 	private List<AutMenu> lstAutMenu;
 	private AutMenu objAutMenu;
@@ -94,17 +94,17 @@ public class FormControlUsuariosPerfiles implements Serializable {
 
 	public void inicializarUsuarios() {
 		try {
-			lstAutUsuario = managerGestionUsuarios.findAllAutUsuario();
-			objAutUsuario = new AutUsuario();
-			objAutUsuario.setAutRol(new AutRol());
-			objAutUsuario.setPerPersona(new PerPersona());
+			lstPerMedico = managerGestionUsuarios.findAllPerMedico();
+			objPerMedico = new PerMedico();
+			objPerMedico.setAutRol(new AutRol());
+			objPerMedico.setPerPersona(new PerPersona());
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
 	}
 
-	public void inicializarActualizarUsuario(AutUsuario auxAutUsuario) {
-		objAutUsuario = auxAutUsuario;
+	public void inicializarActualizarUsuario(PerMedico auxPerMedico) {
+		objPerMedico = auxPerMedico;
 		current.executeInitScript("PF('infUsuario').show()");
 		current.ajax().update(":frmUsuarios");
 		blIbgreso = false;
@@ -133,17 +133,16 @@ public class FormControlUsuariosPerfiles implements Serializable {
 
 	public void buscarPersona() {
 		try {
-			objPersona = managerGestionUsuarios.findPersonaByCedula(objAutUsuario.getCedula());
+			objPersona = managerGestionUsuarios.findPersonaByCedula(objPerMedico.getPerPersona().getCedula());
 			if (objPersona != null) {
-				objAutUsuario.setPerPersona(objPersona);
-				objAutUsuario.setCedula(objPersona.getCedula());
+				objPerMedico.setPerPersona(objPersona);
 				JSFUtil.crearMensajeINFO("Busqueda correcta.");
 				current.ajax().update(":frmUsuarios");
 			} else {
-				ModelUtil.verificarCedulaEcuador(objAutUsuario.getCedula());
+				ModelUtil.verificarCedulaEcuador(objPerMedico.getPerPersona().getCedula());
 				JSFUtil.crearMensajeWARN("Persona no existe.");
 				objPersona = new PerPersona();
-				objPersona.setCedula(objAutUsuario.getCedula());
+				objPersona.setCedula(objPerMedico.getPerPersona().getCedula());
 				System.out.println(objPersona.getCedula());
 				current.executeInitScript("PF('infPersonas').show()");
 				current.executeInitScript("PF('infUsuario').hide()");
@@ -154,7 +153,7 @@ public class FormControlUsuariosPerfiles implements Serializable {
 			e.printStackTrace();
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			objPersona = new PerPersona();
-			objAutUsuario.setPerPersona(objPersona);
+			objPerMedico.setPerPersona(objPersona);
 			current.ajax().update(":frmUsuarios");
 		}
 		current.ajax().update(":frmPrincipal:growl");
@@ -172,8 +171,8 @@ public class FormControlUsuariosPerfiles implements Serializable {
 			objPersona.setCorreo(ModelUtil.cambiarMinusculas(objPersona.getCorreo()));
 			managerGestionUsuarios.ingresarPersona(objPersona);
 			inicializarUsuarios();
-			objAutUsuario.setPerPersona(objPersona);
-			objAutUsuario.setCedula(objPersona.getCedula());
+			objPerMedico.setPerPersona(objPersona);
+			objPerMedico.setPerPersona(objPersona);
 			current.executeInitScript("PF('infPersonas').hide()");
 			current.executeInitScript("PF('infUsuario').show()");
 			current.ajax().update(":frmUsuarios");
@@ -186,13 +185,15 @@ public class FormControlUsuariosPerfiles implements Serializable {
 	}
 
 	public void inicializarNuevoUsuario() {
-		objAutUsuario = new AutUsuario();
-		objAutUsuario.setAutRol(new AutRol());
-		objAutUsuario.setPerPersona(new PerPersona());
+		objPerMedico = new PerMedico();
+		objPerMedico.setAutRol(new AutRol());
+		objPerMedico.setPerPersona(new PerPersona());
 		blIbgreso = true;
 		current.executeInitScript("PF('infUsuario').show()");
 		current.ajax().update(":frmUsuarios");
 	}
+	
+
 
 	public void inicializarNuevoRol() {
 		objAutRol = new AutRol();
@@ -225,13 +226,13 @@ public class FormControlUsuariosPerfiles implements Serializable {
 		current.ajax().update(":frmPerfil");
 	}
 
-	public void restablecerContraseniaUsuario(AutUsuario auxAutUsuario) {
+	public void restablecerContraseniaUsuario(PerMedico auxPerMedico) {
 		try {
-			auxAutUsuario.setClave(ModelUtil.md5(auxAutUsuario.getCedula()));
-			auxAutUsuario.setPrimerInicio("SI");
-			managerGestionUsuarios.actualizarUsuario(auxAutUsuario);
+			auxPerMedico.setClave(ModelUtil.md5(auxPerMedico.getPerPersona().getCedula()));
+			auxPerMedico.setPrimerInicio("SI");
+			managerGestionUsuarios.actualizarUsuario(auxPerMedico);
 			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "Inactivar Usuario.",
-					auxAutUsuario.toString());
+					auxPerMedico.toString());
 			inicializarUsuarios();
 			JSFUtil.crearMensajeINFO("Contraseña restablecida.");
 			current.ajax().update(":frmPrincipal");
@@ -241,13 +242,13 @@ public class FormControlUsuariosPerfiles implements Serializable {
 		}
 	}
 
-	public void inactivarUsuario(AutUsuario auxAutUsuario) {
+	public void inactivarUsuario(PerMedico auxPerMedico) {
 		try {
-			auxAutUsuario.setFechaBaja(new Date());
-			auxAutUsuario.setEstado("I");
-			managerGestionUsuarios.actualizarUsuario(auxAutUsuario);
+			auxPerMedico.setFechaBaja(new Date());
+			auxPerMedico.setEstado("I");
+			managerGestionUsuarios.actualizarUsuario(auxPerMedico);
 			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "Inactivar Usuario.",
-					auxAutUsuario.toString());
+					auxPerMedico.toString());
 			inicializarUsuarios();
 			JSFUtil.crearMensajeINFO("Usuario Inactivado.");
 			current.ajax().update(":frmPrincipal");
@@ -369,14 +370,14 @@ public class FormControlUsuariosPerfiles implements Serializable {
 		}
 	}
 
-	public void activarUsuario(AutUsuario auxAutUsuario) {
+	public void activarUsuario(PerMedico auxPerMedico) {
 		try {
-			auxAutUsuario.setFechaBaja(null);
-			auxAutUsuario.setFechaAlta(new Date());
-			auxAutUsuario.setEstado("A");
-			managerGestionUsuarios.actualizarUsuario(auxAutUsuario);
+			auxPerMedico.setFechaBaja(null);
+			auxPerMedico.setFechaAlta(new Date());
+			auxPerMedico.setEstado("A");
+			managerGestionUsuarios.actualizarUsuario(auxPerMedico);
 			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "Activar Usuario.",
-					auxAutUsuario.toString());
+					auxPerMedico.toString());
 			inicializarUsuarios();
 			JSFUtil.crearMensajeINFO("Usuario Activado.");
 			current.ajax().update(":frmPrincipal");
@@ -388,10 +389,10 @@ public class FormControlUsuariosPerfiles implements Serializable {
 
 	public void actualizarUsuario() {
 		try {
-			managerGestionUsuarios.actualizarUsuario(objAutUsuario);
+			managerGestionUsuarios.actualizarUsuario(objPerMedico);
 			inicializarUsuarios();
 			managerLog.generarLogAuditoria(beanLogin.getCredencial(), this.getClass(), "Activar Usuario.",
-					objAutUsuario.toString());
+					objPerMedico.toString());
 			JSFUtil.crearMensajeINFO("Actualización Exitosa.");
 			current.executeInitScript("PF('infUsuario').hide()");
 			current.ajax().update(":frmPrincipal");
@@ -455,17 +456,17 @@ public class FormControlUsuariosPerfiles implements Serializable {
 
 	public void ingresarUsuario() {
 		try {
-			if (ModelUtil.isEmpty(objAutUsuario.getPerPersona().getCedula()))
+			if (ModelUtil.isEmpty(objPerMedico.getPerPersona().getCedula()))
 				throw new Exception("No se ha seleccionado una persona");
-			if (objAutUsuario.getAutRol().getCodigo() == 0)
+			if (objPerMedico.getAutRol().getCodigo() == 0)
 				throw new Exception("No se ha seleccionado un Rol");
-			if (managerGestionSistema.findByIdAutUsuario(objAutUsuario.getCedula()) != null)
+			if (managerGestionSistema.findByIdPerMedico(objPerMedico.getCodigoMedico()) != null)
 				throw new Exception("Usuario ya se encuentra registrado.");
-			objAutUsuario.setEstado("A");
-			objAutUsuario.setPrimerInicio("SI");
-			objAutUsuario.setFechaAlta(new Date());
-			objAutUsuario.setClave(ModelUtil.md5(objAutUsuario.getCedula()));
-			managerGestionUsuarios.ingresarUsuario(objAutUsuario);
+			objPerMedico.setEstado("A");
+			objPerMedico.setPrimerInicio("SI");
+			objPerMedico.setFechaAlta(new Date());
+			objPerMedico.setClave(ModelUtil.md5(objPerMedico.getPerPersona().getCedula()));
+			managerGestionUsuarios.ingresarUsuario(objPerMedico);
 			inicializarUsuarios();
 			JSFUtil.crearMensajeINFO("Ingreso Exitoso.");
 			current.executeInitScript("PF('infUsuario').hide()");
@@ -602,20 +603,20 @@ public class FormControlUsuariosPerfiles implements Serializable {
 		this.beanLogin = beanLogin;
 	}
 
-	public List<AutUsuario> getLstAutUsuario() {
-		return lstAutUsuario;
+	public List<PerMedico> getLstPerMedico() {
+		return lstPerMedico;
 	}
 
-	public void setLstAutUsuario(List<AutUsuario> lstAutUsuario) {
-		this.lstAutUsuario = lstAutUsuario;
+	public void setLstPerMedico(List<PerMedico> lstPerMedico) {
+		this.lstPerMedico = lstPerMedico;
 	}
 
-	public AutUsuario getObjAutUsuario() {
-		return objAutUsuario;
+	public PerMedico getObjPerMedico() {
+		return objPerMedico;
 	}
 
-	public void setObjAutUsuario(AutUsuario objAutUsuario) {
-		this.objAutUsuario = objAutUsuario;
+	public void setObjPerMedico(PerMedico objPerMedico) {
+		this.objPerMedico = objPerMedico;
 	}
 
 	public boolean isBlIbgreso() {

@@ -3,7 +3,7 @@
  */
 package ec.com.model.gestionSistema;
 
-import ec.com.model.dao.entity.AutUsuario;
+import ec.com.model.dao.entity.PerMedico;
 
 /**
  * Token de seguridad que se conforma del ID del usuario, el codigo de seguridad
@@ -13,7 +13,7 @@ import ec.com.model.dao.entity.AutUsuario;
  *
  */
 public class Credencial {
-	private AutUsuario objAutUsuario;
+	private PerMedico objPerMedico;
 	private String direccionIP;
 	private String correo;
 	private String primerInicio;
@@ -22,12 +22,12 @@ public class Credencial {
 	public Credencial() {
 	}
 
-	public AutUsuario getObjAutUsuario() {
-		return objAutUsuario;
+	public PerMedico getObjPerMedico() {
+		return objPerMedico;
 	}
 
-	public void setObjAutUsuario(AutUsuario objAutUsuario) {
-		this.objAutUsuario = objAutUsuario;
+	public void setObjPerMedico(PerMedico objPerMedico) {
+		this.objPerMedico = objPerMedico;
 	}
 
 	public String getDireccionIP() {

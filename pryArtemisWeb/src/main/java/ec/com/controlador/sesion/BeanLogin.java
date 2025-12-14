@@ -191,6 +191,18 @@ public class BeanLogin implements Serializable {
 		return null;
 
 	}
+	
+	public String getPathReportes() {
+		String valorPath = "";
+		try {
+			//valorPath = managerParametros.getValorParametro("PATH_REPORTE");
+			valorPath = "";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return valorPath;
+	}
 
 	/*******************************************************************
 	 ********************* 

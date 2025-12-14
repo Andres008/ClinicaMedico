@@ -1,5 +1,6 @@
 package ec.com.model.gestionSistema;
 
+import java.io.EOFException;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,7 +15,7 @@ import ec.com.model.dao.entity.AutParametrosGenerale;
 import ec.com.model.dao.entity.AutPerfile;
 import ec.com.model.dao.entity.AutRol;
 import ec.com.model.dao.entity.AutRolPerfil;
-import ec.com.model.dao.entity.AutUsuario;
+import ec.com.model.dao.entity.PerMedico;
 import ec.com.model.dao.entity.VAutMenuRol;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
 import ec.com.model.modulos.util.ModelUtil;
@@ -33,8 +34,8 @@ public class ManagerGestionSistema {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Credencial obtenerAcceso(String pIdUsuario, String pClave) throws Exception {
-		AutUsuario usuario = findByIdAutUsuario(pIdUsuario);
+	public Credencial obtenerAcceso(long pIdUsuario, String pClave) throws Exception {
+		PerMedico usuario = findByIdPerMedico(pIdUsuario);
 		Credencial credencial = new Credencial();
 
 		if (usuario == null)
@@ -49,11 +50,11 @@ public class ManagerGestionSistema {
 		// System.out.println(usuario.getApellidos()+" "+usuario.getNombres()+"
 		// "+pIdUsuario);
 		credencial = new Credencial();
-		credencial.setObjAutUsuario(usuario);
+		credencial.setObjPerMedico(usuario);
 		// credencial.setCorreo(usuario.getGesPersona().getCorreo());
 		credencial.setPrimerInicio(usuario.getPrimerInicio());
 
-		credencial.setUsrFotografia(cargarFotografia(credencial.getObjAutUsuario().getCedula()));
+		credencial.setUsrFotografia(cargarFotografia(credencial.getObjPerMedico().getPerPersona().getCedula()));
 		return credencial;
 
 	}
@@ -70,8 +71,8 @@ public class ManagerGestionSistema {
 		}
 	}
 
-	public AutUsuario findByIdAutUsuario(String idUsuario) throws Exception {
-		AutUsuario usuario = (AutUsuario) managerDAOSegbecom.findById(AutUsuario.class, idUsuario);
+	public PerMedico findByIdPerMedico(long idUsuario) throws Exception {
+		PerMedico usuario = (PerMedico) managerDAOSegbecom.findById(PerMedico.class, idUsuario);
 		return usuario;
 	}
 
@@ -220,5 +221,21 @@ public class ManagerGestionSistema {
 	@SuppressWarnings("unchecked")
 	public List<AutRol> buscarAutRolByTipoUsuario(long idTipoSocio) throws Exception {
 		return managerDAOSegbecom.findWhere(AutRol.class, "o.usrTipoSocio.idTipoSocio=" + idTipoSocio, "o.nombre ASC");
+	}
+
+	public PerMedico findMedicoByCedulaUnic0(String idUsuario) throws Exception {
+		try {
+			@SuppressWarnings("unchecked")
+			List<PerMedico> lstMedido = managerDAOSegbecom.findWhere(PerMedico.class,
+					"o.perPersona.cedula='" + idUsuario + "'", null);
+			;
+			if (lstMedido.size() == 1)
+				return lstMedido.get(0);
+			throw new Exception("Existe mas de un registro para esta cédula. ");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		}
 	}
 }

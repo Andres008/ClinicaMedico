@@ -23,7 +23,7 @@ import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.auditoria.ManagerLog;
 import ec.com.model.dao.entity.AutRol;
 import ec.com.model.dao.entity.AutRolPerfil;
-import ec.com.model.dao.entity.AutUsuario;
+import ec.com.model.dao.entity.PerMedico;
 import ec.com.model.dao.entity.VAutMenuRol;
 import ec.com.model.gestionSistema.Credencial;
 import ec.com.model.gestionSistema.ManagerGestionSistema;
@@ -44,7 +44,7 @@ public class ControladorAcceso implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	private AutUsuario objAutUsuario;
+	private PerMedico objPerMedico;
 	private String idUsuario;
 	private String clave;
 	private MenuModel model;
@@ -70,7 +70,7 @@ public class ControladorAcceso implements Serializable {
 
 	public void inicializarAcceso() {
 		cambiosContrasenia = false;
-		objAutUsuario = new AutUsuario();
+		objPerMedico = new PerMedico();
 	}
 
 	public void mensageCambioContrasenia() {
@@ -102,7 +102,7 @@ public class ControladorAcceso implements Serializable {
 
 	public void inicializarCredenciales() {
 		panelCambioContr = false;
-		objAutUsuario = new AutUsuario();
+		objPerMedico = new PerMedico();
 	}
 
 	/***
@@ -154,9 +154,10 @@ public class ControladorAcceso implements Serializable {
 		try {
 			// Credencial credencial = managerGestionSistema.obtenerAcceso(idUsuario,
 			// ModelUtil.md5(clave.trim()));
-			Credencial credencial = managerGestionSistema.obtenerAcceso(idUsuario, ModelUtil.md5(clave.trim()));
+			PerMedico objMedico = managerGestionSistema.findMedicoByCedulaUnic0(idUsuario);
+			Credencial credencial = managerGestionSistema.obtenerAcceso(objMedico.getCodigoMedico(), ModelUtil.md5(clave.trim()));
 
-			objAutUsuario = credencial.getObjAutUsuario();
+			objPerMedico = credencial.getObjPerMedico();
 			// se configura la direccion IP del cliente:
 			HttpServletRequest request;
 			request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -174,10 +175,10 @@ public class ControladorAcceso implements Serializable {
 			// IP:
 			credencial.setDireccionIP(request.getRemoteAddr());
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("credencial", credencial);
-			if (objAutUsuario.getPrimerInicio().equals("SI")) {
+			if (objPerMedico.getPrimerInicio().equals("SI")) {
 				managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actionObtenerAcceso",
 						"Cambio de contraseña.");
-				objAutUsuario.setClave("");
+				objPerMedico.setClave("");
 				cambiosContrasenia = true;
 				JSFUtil.crearMensajeINFO("Por su seguridad, se requiere cambio de contraseña.");
 				return "";
@@ -188,7 +189,7 @@ public class ControladorAcceso implements Serializable {
 			 * "actionObtenerAcceso", "Se ingresa al sistema, actualización de Datos.");
 			 * return "/modulos/usuarios/actualizacionDatos?faces-redirect=true"; }
 			 */
-			menuByRol(objAutUsuario.getAutRol());
+			menuByRol(objPerMedico.getAutRol());
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actionObtenerAcceso",
 					"Se ingresa al sistema");
 			return "/modulos/menuPrincipal?faces-redirect=true";
@@ -206,13 +207,13 @@ public class ControladorAcceso implements Serializable {
 	 */
 	public void actualizarContrasenia() {
 		try {
-			if (objAutUsuario.getClave().equals(objAutUsuario.getCedula()))
+			if (objPerMedico.getClave().equals(objPerMedico.getPerPersona().getCedula()))
 				throw new Exception("La clave no puede ser el número de cedula");
-			objAutUsuario.setClave(ModelUtil.md5(objAutUsuario.getClave()));
-			objAutUsuario.setPrimerInicio("NO");
-			managerGestionUsuarios.actualizarUsuario(objAutUsuario);
+			objPerMedico.setClave(ModelUtil.md5(objPerMedico.getClave()));
+			objPerMedico.setPrimerInicio("NO");
+			managerGestionUsuarios.actualizarUsuario(objPerMedico);
 			managerLog.generarLogUsabilidad(beanLogin.getCredencial(), this.getClass(), "actualizarContrasenia",
-					"Actualizo contraseña usuario " + objAutUsuario);
+					"Actualizo contraseña usuario " + objPerMedico);
 			JSFUtil.crearMensajeINFO("Contraseña cambiada correctamente.");
 			inicializarAcceso();
 		} catch (Exception e) {
@@ -244,12 +245,14 @@ public class ControladorAcceso implements Serializable {
 		this.beanLogin = beanLogin;
 	}
 
-	public AutUsuario getObjAutUsuario() {
-		return objAutUsuario;
+	
+
+	public PerMedico getObjPerMedico() {
+		return objPerMedico;
 	}
 
-	public void setObjAutUsuario(AutUsuario objAutUsuario) {
-		this.objAutUsuario = objAutUsuario;
+	public void setObjPerMedico(PerMedico objPerMedico) {
+		this.objPerMedico = objPerMedico;
 	}
 
 	public String getIdUsuario() {

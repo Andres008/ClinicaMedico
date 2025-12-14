@@ -16,9 +16,9 @@ public class AutParametrosGenerale implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="AUT_PARAMETROS_GENERALES_CODIGO_GENERATOR", sequenceName="SEQ_AUT_PARAMETROS_GENERALES",allocationSize = 1)
+	@SequenceGenerator(name="AUT_PARAMETROS_GENERALES_CODIGO_GENERATOR", sequenceName="SEQ_AUT_PARAMETROS_GENERALES", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="AUT_PARAMETROS_GENERALES_CODIGO_GENERATOR")
-	private long codigo;
+	private Integer codigo;
 
 	private String estado;
 
@@ -37,11 +37,11 @@ public class AutParametrosGenerale implements Serializable {
 	public AutParametrosGenerale() {
 	}
 
-	public long getCodigo() {
+	public Integer getCodigo() {
 		return this.codigo;
 	}
 
-	public void setCodigo(long codigo) {
+	public void setCodigo(Integer codigo) {
 		this.codigo = codigo;
 	}
 

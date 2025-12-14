@@ -16,10 +16,10 @@ public class VAutMenuRol implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private BigDecimal id;
+	private Integer id;
 
 	@Column(name="id_rol")
-	private BigDecimal idRol;
+	private Integer idRol;
 
 	private String nombre;
 
@@ -28,19 +28,19 @@ public class VAutMenuRol implements Serializable {
 	public VAutMenuRol() {
 	}
 
-	public BigDecimal getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(BigDecimal id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public BigDecimal getIdRol() {
+	public Integer getIdRol() {
 		return this.idRol;
 	}
 
-	public void setIdRol(BigDecimal idRol) {
+	public void setIdRol(Integer idRol) {
 		this.idRol = idRol;
 	}
 

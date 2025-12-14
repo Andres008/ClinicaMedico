@@ -10,7 +10,7 @@ import ec.com.model.dao.entity.AutMenu;
 import ec.com.model.dao.entity.AutPerfile;
 import ec.com.model.dao.entity.AutRol;
 import ec.com.model.dao.entity.AutRolPerfil;
-import ec.com.model.dao.entity.AutUsuario;
+import ec.com.model.dao.entity.PerMedico;
 import ec.com.model.dao.entity.PerPersona;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
 
@@ -22,19 +22,19 @@ public class ManagerGestionUsuarios {
 	ManagerDAOSegbecom managerDAOSegbecom;
 
 	@SuppressWarnings("unchecked")
-	public List<AutUsuario> findAllAutUsuario() throws Exception {
+	public List<PerMedico> findAllPerMedico() throws Exception {
 		try {
-			return managerDAOSegbecom.findAll(AutUsuario.class, "o.perPersona.apellidos ASC");
+			return managerDAOSegbecom.findAll(PerMedico.class, "o.perPersona.apellidos ASC");
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new Exception("Error al buscar AutUsuario. " + e.getMessage());
+			throw new Exception("Error al buscar PerMedico. " + e.getMessage());
 		}
 
 	}
 
-	public void actualizarUsuario(AutUsuario objAutUsuario) throws Exception {
+	public void actualizarUsuario(PerMedico objPerMedico) throws Exception {
 		try {
-			managerDAOSegbecom.actualizar(objAutUsuario);
+			managerDAOSegbecom.actualizar(objPerMedico);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception("Error al actualizar AutUsaurio. " + e.getMessage());
@@ -52,12 +52,12 @@ public class ManagerGestionUsuarios {
 		}
 	}
 
-	public void ingresarUsuario(AutUsuario objAutUsuario) throws Exception {
+	public void ingresarUsuario(PerMedico objPerMedico) throws Exception {
 		try {
-			managerDAOSegbecom.insertar(objAutUsuario);
+			managerDAOSegbecom.insertar(objPerMedico);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new Exception("Error al insertar AutUsuario. " + e.getMessage());
+			throw new Exception("Error al insertar PerMedico. " + e.getMessage());
 		}
 	}
 
