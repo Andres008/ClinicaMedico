@@ -316,13 +316,13 @@
 				</p:confirmDialog>
 			</h:form>
 		</p:dialog>
-		
-		<p:dialog header="Adjunto" widgetVar="dlgReporte" modal="true"
-			position="top" width="85%" resizable="false" closable="true">
-			<h:form id="frmReporte">
+		<h:form id="frmReporte">
+			<p:dialog header="Adjunto" widgetVar="dlgReporte" modal="true"
+				position="top" width="85%" resizable="false" closable="true">
 				<p:media cache="false" value="#{formAtencionMedica.report}"
-					width="85%" height="500" player="pdf"></p:media>
-			</h:form>
-		</p:dialog>
+					width="85%" height="500" player="pdf" />
+
+			</p:dialog>
+		</h:form>
 	</ui:define>
 </ui:composition>

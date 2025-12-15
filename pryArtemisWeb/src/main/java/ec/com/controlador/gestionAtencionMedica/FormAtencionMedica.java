@@ -106,7 +106,9 @@ public class FormAtencionMedica implements Serializable {
 	}
 
 	public void reporteReceta(PerConsulta objConsulta) {
-		try { 
+		try {
+			if (objConsulta.getCodigoConsulta() != 0)
+				objConsulta = managerAtencionMedica.findConsultaById(objConsulta.getCodigoConsulta());
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			parametros.put("Codigo", "Ejemplo");
 			JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(
