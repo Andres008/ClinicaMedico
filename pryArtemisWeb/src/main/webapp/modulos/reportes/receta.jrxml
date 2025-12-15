@@ -9,7 +9,7 @@
 		<band height="130">
 			<image>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="800" height="130" uuid="e2f7c7a3-a776-4007-92db-8c68ed0ec79b"/>
-				<imageExpression><![CDATA["D:/Desarrollo/Reportes/Receta/cabecera.png"]]></imageExpression>
+				<imageExpression><![CDATA["D:/acardenas/Desarrollo/Reportes/Receta/cabecera.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>
@@ -17,8 +17,16 @@
 		<band height="61">
 			<image>
 				<reportElement x="0" y="0" width="801" height="61" uuid="692fbc62-5d81-4bfa-a7d8-59d88ecd0908"/>
-				<imageExpression><![CDATA["D:/Desarrollo/Reportes/Receta/pieReceta.png"]]></imageExpression>
+				<imageExpression><![CDATA["D:/acardenas/Desarrollo/Reportes/Receta/pieReceta.png"]]></imageExpression>
 			</image>
 		</band>
 	</pageFooter>
+	<summary>
+		<band height="50">
+			<staticText>
+				<reportElement x="240" y="9" width="211" height="31" uuid="d48d22b9-821f-4f5c-afd2-a8f8d163a58f"/>
+				<text><![CDATA[Static Text]]></text>
+			</staticText>
+		</band>
+	</summary>
 </jasperReport>
