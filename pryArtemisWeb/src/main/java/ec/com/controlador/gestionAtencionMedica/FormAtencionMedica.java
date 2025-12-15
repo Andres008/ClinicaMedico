@@ -106,23 +106,15 @@ public class FormAtencionMedica implements Serializable {
 	}
 
 	public void reporteReceta(PerConsulta objConsulta) {
-		try {
-			if (objConsulta.getCodigoConsulta() != 0)
-				objConsulta = managerAtencionMedica.findConsultaById(objConsulta.getCodigoConsulta());
-			for (PerReceta iterable_element : objConsulta.getPerRecetas()) {
-				System.out.println(iterable_element.getIndicacion() + " -- " + iterable_element.getMedicamento());
-			}
-
+		try { 
 			Map<String, Object> parametros = new HashMap<String, Object>();
-
 			parametros.put("Codigo", "Ejemplo");
-
-			/*JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(
+			JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(
 					objConsulta.getPerRecetas());
-			File jasper = new File(beanLogin.getPathReportes() + "consultaAsistencia.jasper");
+			File jasper = new File(beanLogin.getPathReportes() + "receta.jasper");
 			JasperPrint jasperPrint;
 			jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros, beanCollectionDataSource);
-			reportPdf = JasperExportManager.exportReportToPdf(jasperPrint);*/
+			reportPdf = JasperExportManager.exportReportToPdf(jasperPrint);
 			current.executeScript("PF('dlgReporte').show()");
 			current.ajax().update(":frmReporte");
 		} catch (Exception e) {

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="factura" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="da75a5a0-8255-47e2-a2ba-d159d3fe2fff">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="Mes" class="java.lang.String"/>
+	<parameter name="Codigo" class="java.lang.String"/>
+	<parameter name="Cedula" class="java.lang.String"/>
+	<parameter name="pathImagen" class="java.lang.String"/>
+	<parameter name="Nombres" class="java.lang.String"/>
+	<parameter name="Fecha" class="java.lang.String"/>
+	<parameter name="Departamento" class="java.lang.String"/>
+	<parameter name="Imprime" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="clave" class="java.lang.String">
+		<fieldDescription><![CDATA[clave]]></fieldDescription>
+	</field>
+	<field name="codigo" class="java.lang.String">
+		<fieldDescription><![CDATA[codigo]]></fieldDescription>
+	</field>
+	<field name="marcaciones" class="java.lang.String">
+		<fieldDescription><![CDATA[marcaciones]]></fieldDescription>
+	</field>
+	<field name="fechaDia" class="java.util.Date">
+		<fieldDescription><![CDATA[fechaDia]]></fieldDescription>
+	</field>
+	<field name="dia" class="java.lang.String">
+		<fieldDescription><![CDATA[dia]]></fieldDescription>
+	</field>
+	<title>
+		<band height="130">
+			<image>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="800" height="130" uuid="e2f7c7a3-a776-4007-92db-8c68ed0ec79b"/>
+				<imageExpression><![CDATA["src/main/webapp/resources/images/cabecera.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageFooter>
+		<band height="61">
+			<image>
+				<reportElement x="0" y="0" width="801" height="61" uuid="692fbc62-5d81-4bfa-a7d8-59d88ecd0908"/>
+				<imageExpression><![CDATA["src/main/webapp/resources/images/pieReceta.png"]]></imageExpression>
+			</image>
+		</band>
+	</pageFooter>
+</jasperReport>

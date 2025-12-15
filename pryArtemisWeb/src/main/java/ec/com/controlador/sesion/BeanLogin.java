@@ -196,7 +196,7 @@ public class BeanLogin implements Serializable {
 		String valorPath = "";
 		try {
 			//valorPath = managerParametros.getValorParametro("PATH_REPORTE");
-			valorPath = "";
+			valorPath = "D:\\Desarrollo\\Reportes\\Receta\\";
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
