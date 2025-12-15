@@ -36,7 +36,7 @@ import ec.com.model.modulos.util.ModelUtil;
 public class ControladorAcceso implements Serializable {
 
 	/**
-	 * 
+	 *  
 	 */
 	private static final long serialVersionUID = 1L;
 
