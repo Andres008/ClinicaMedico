@@ -63,8 +63,10 @@ public class ManagerGestionSistema {
 		try {
 			String valorPath = buscarValorParametroNombre("PATH_FOTO_DEFAULT");
 			File arch = new File(valorPath + cedula + ".png");
-			if (!arch.exists())
-				return Files.readAllBytes(Paths.get("/mnt/nfs/fotografiaUsuario/undefined.png"));
+			if (!arch.exists()) {
+				System.out.println(valorPath + "undefined.png");
+				return Files.readAllBytes(Paths.get(valorPath + "undefined.png"));
+			}	
 			return Files.readAllBytes(Paths.get(arch.getAbsolutePath()));
 		} catch (Exception e) {
 			return null;
@@ -231,6 +233,8 @@ public class ManagerGestionSistema {
 			;
 			if (lstMedido.size() == 1)
 				return lstMedido.get(0);
+			if (lstMedido.isEmpty())
+				throw new Exception("Usuario incorrecto.");
 			throw new Exception("Existe mas de un registro para esta cédula. ");
 
 		} catch (Exception e) {

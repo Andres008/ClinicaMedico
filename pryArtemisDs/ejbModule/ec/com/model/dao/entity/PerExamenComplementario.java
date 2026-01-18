@@ -20,7 +20,7 @@ public class PerExamenComplementario implements Serializable {
 	@Column(name="cod_examen_complementario")
 	private long codExamenComplementario;
 
-	private String ruta;
+	private String valor;
 
 	//bi-directional many-to-one association to PerConsulta
 	@ManyToOne
@@ -43,14 +43,6 @@ public class PerExamenComplementario implements Serializable {
 		this.codExamenComplementario = codExamenComplementario;
 	}
 
-	public String getRuta() {
-		return this.ruta;
-	}
-
-	public void setRuta(String ruta) {
-		this.ruta = ruta;
-	}
-
 	public PerConsulta getPerConsulta() {
 		return this.perConsulta;
 	}
@@ -65,6 +57,14 @@ public class PerExamenComplementario implements Serializable {
 
 	public void setPerTipoExamenComple(PerTipoExamenComple perTipoExamenComple) {
 		this.perTipoExamenComple = perTipoExamenComple;
+	}
+
+	public String getValor() {
+		return valor;
+	}
+
+	public void setValor(String valor) {
+		this.valor = valor;
 	}
 
 }

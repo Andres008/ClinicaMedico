@@ -16,8 +16,6 @@ public class PerTipoPatologia implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="PER_TIPO_PATOLOGIA_CODIGOTIPOPATOLOGIA_GENERATOR", sequenceName="SEQ_PER_TIPO_PATOLOGIA", allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="PER_TIPO_PATOLOGIA_CODIGOTIPOPATOLOGIA_GENERATOR")
 	@Column(name="codigo_tipo_patologia")
 	private long codigoTipoPatologia;
 

@@ -3,6 +3,7 @@ package ec.com.controlador.gestionAtencionMedica;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,12 +26,16 @@ import org.primefaces.model.StreamedContent;
 import ec.com.controlador.gestionSistema.FormControlUsuariosPerfiles;
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.auditoria.ManagerLog;
+import ec.com.model.dao.entity.PerCie;
 import ec.com.model.dao.entity.PerConsulta;
 import ec.com.model.dao.entity.PerExamenComplementario;
 import ec.com.model.dao.entity.PerPaciente;
 import ec.com.model.dao.entity.PerPacienteMedico;
+import ec.com.model.dao.entity.PerPatologia;
 import ec.com.model.dao.entity.PerPersona;
 import ec.com.model.dao.entity.PerReceta;
+import ec.com.model.dao.entity.PerTipoExamenComple;
+import ec.com.model.dao.entity.PerTipoPatologia;
 import ec.com.model.gestionAtencionMedica.ManagerAtencionMedica;
 import ec.com.model.gestionUsuarios.ManagerGestionUsuarios;
 import ec.com.model.modulos.util.JSFUtil;
@@ -66,8 +71,12 @@ public class FormAtencionMedica implements Serializable {
 	private PerPacienteMedico objPerPacienteMedico;
 	private PerReceta objPerReceta;
 	private Boolean pnlPacientes, blIbgreso, pnlDatosPaciente, pnlConsulta;
-	PrimeFaces current = PrimeFaces.current();
 	private static byte[] reportPdf;
+	private List<PerCie> lstPerCies;
+	private List<PerTipoPatologia> lstTipoPatologias;
+	private PerPatologia objPerPatologia;
+	private PerExamenComplementario objPerExamenComplementario;
+	private List<PerTipoExamenComple> lstPerTipoExamenComples;
 
 	private static final long serialVersionUID = 1L;
 
@@ -77,7 +86,21 @@ public class FormAtencionMedica implements Serializable {
 
 	@PostConstruct
 	public void inicializarVariables() {
-		formControlUsuariosPerfiles.setObjPersona(new PerPersona());
+		try {
+			formControlUsuariosPerfiles.setObjPersona(new PerPersona());
+			lstPerCies = new ArrayList<PerCie>();
+			lstTipoPatologias = managerAtencionMedica.findAllTipoPatologia();
+			objPerConsulta = new PerConsulta();
+			inicializarPatologia();
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
+
+	}
+
+	public void inicializarPatologia() {
+		objPerPatologia = new PerPatologia();
+		objPerPatologia.setPerTipoPatologia(new PerTipoPatologia());
 	}
 
 	public void inicializarPaneles() {
@@ -87,60 +110,195 @@ public class FormAtencionMedica implements Serializable {
 		pnlConsulta = false;
 	}
 
-	public void nuevaConsulta() {
-		inicializarPaneles();
-		pnlConsulta = true;
+	public void inicializarNuevaConsulta() {
 		objPerConsulta = new PerConsulta();
 		objPerConsulta.setPerExamenComplementarios(new ArrayList<PerExamenComplementario>());
 		objPerConsulta.setPerRecetas(new ArrayList<PerReceta>());
+		objPerConsulta.setPerCie(new PerCie());
 		objPerReceta = new PerReceta();
+		objPerConsulta.setFecha(new Date());
 		objPerConsulta.setPerPacienteMedico(objPerPacienteMedico);
-		current.ajax().update(":frmPrincipal");
+		PrimeFaces.current().executeInitScript("PF('infNuevaConsulta').show()");
+		PrimeFaces.current().ajax().update(":frmNuevaConsulta");
+	}
+
+	public void nuevaConsulta() {
+		try {
+			lstPerCies = managerAtencionMedica.fillAllCIE();
+			lstPerTipoExamenComples = managerAtencionMedica.findAllPerTipoExamenComples();
+			objPerExamenComplementario = new PerExamenComplementario();
+			objPerExamenComplementario.setPerTipoExamenComple(new PerTipoExamenComple());
+			inicializarPaneles();
+			pnlConsulta = true;
+			PrimeFaces.current().executeInitScript("PF('infNuevaConsulta').hide()");
+			PrimeFaces.current().ajax().update(":frmPrincipal");
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
+
 	}
 
 	public void agregarMedicamento() {
 		objPerReceta.setPerConsulta(objPerConsulta);
 		objPerConsulta.getPerRecetas().add(objPerReceta);
 		objPerReceta = new PerReceta();
-		current.ajax().update(":frmPrincipal");
+		PrimeFaces.current().ajax().update(":frmPrincipal");
+	}
+
+	public void agregarExamenComplementario() {
+		try {
+			objPerExamenComplementario.setPerConsulta(objPerConsulta);
+			objPerExamenComplementario.setPerTipoExamenComple(managerAtencionMedica.findPerTipoExamenCompleById(
+					objPerExamenComplementario.getPerTipoExamenComple().getCodigoTipoExamComple()));
+			objPerConsulta.getPerExamenComplementarios().add(objPerExamenComplementario);
+			objPerExamenComplementario = new PerExamenComplementario();
+			objPerExamenComplementario.setPerTipoExamenComple(new PerTipoExamenComple());
+			JSFUtil.crearMensajeINFO("Información ingresa corectamente");
+
+		} catch (Exception e) {
+			JSFUtil.crearMensajeERROR(e.getMessage());
+		}
+		PrimeFaces.current().ajax().update(":frmPrincipal");
+	}
+
+	public void agregarPatologia() {
+		try {
+			PerPaciente paciente = managerAtencionMedica
+					.findPacienteById(objPerPacienteMedico.getPerPaciente().getCodigoPaciente());
+			objPerPatologia.setPerPaciente(paciente);
+			paciente.getPerPatologias().add(objPerPatologia);
+			managerAtencionMedica.actualizarPerPaciente(paciente);
+			objPerPacienteMedico = managerAtencionMedica
+					.findPerPacienteMedicoById(objPerPacienteMedico.getCodigoPacienteMedico());
+			objPerPacienteMedico.setPerPaciente(
+					managerAtencionMedica.findPacienteById(objPerPacienteMedico.getPerPaciente().getCodigoPaciente()));
+			inicializarPatologia();
+			JSFUtil.crearMensajeINFO("Información ingresa corectamente");
+			PrimeFaces.current().ajax().update(":frmPrincipal:tvPaciente");
+			PrimeFaces.current().ajax().update(":frmPrincipal:tblPatologia");
+			PrimeFaces.current().ajax().update(":frmPrincipal:growl");
+		} catch (Exception e) {
+			e.printStackTrace();
+			JSFUtil.crearMensajeERROR("Error al registrar patología. " + e.getMessage());
+		}
+
 	}
 
 	public void reporteReceta(PerConsulta objConsulta) {
 		try {
-			if (objConsulta.getCodigoConsulta() != 0)
+			if (objConsulta.getCodigoConsulta() != 0) {
 				objConsulta = managerAtencionMedica.findConsultaById(objConsulta.getCodigoConsulta());
-			Map<String, Object> parametros = new HashMap<String, Object>();
-			parametros.put("Codigo", "Ejemplo");
-			JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(
-					objConsulta.getPerRecetas());
+			}
+
+			String medicacion = "", indicacion = "";
+
+			for (PerReceta receta : objConsulta.getPerRecetas()) {
+				medicacion = medicacion + receta.getMedicamento() + "\n" + "\n";
+				indicacion = indicacion + receta.getIndicacion() + "\n" + "\n";
+			}
+			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+			Map<String, Object> parametros = new HashMap<>();
+			parametros.put("medicacion", medicacion);
+			parametros.put("indicacion", indicacion);
+			parametros.put("ciudad", "Ibarra");
+			parametros.put("fecha", formato.format(objConsulta.getFecha()));
+			parametros.put("paciente",
+					objConsulta.getPerPacienteMedico().getPerPaciente().getPerPersona().getApellidos() + " "
+							+ objConsulta.getPerPacienteMedico().getPerPaciente().getPerPersona().getNombres());
+			parametros.put("edad",
+					ModelUtil.calcularEdad(
+							objConsulta.getPerPacienteMedico().getPerPaciente().getPerPersona().getFechaNacimiento())
+							+ "");
+			objConsulta.setPerCie(managerAtencionMedica.findCIEbyId(objConsulta.getPerCie().getCodigoCie()));
+			parametros.put("cie",
+					objConsulta.getPerCie().getCodigoCie() + " - " + objConsulta.getPerCie().getDescripcion());
+			JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(objConsulta.getPerRecetas());
 			File jasper = new File(beanLogin.getPathReportes() + "receta.jasper");
-			JasperPrint jasperPrint;
-			jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros, beanCollectionDataSource);
-			reportPdf = JasperExportManager.exportReportToPdf(jasperPrint);
-			current.executeScript("PF('dlgReporte').show()");
-			current.ajax().update(":frmReporte");
+			JasperPrint jp = JasperFillManager.fillReport(jasper.getPath(), parametros, ds);
+
+			reportPdf = JasperExportManager.exportReportToPdf(jp);
+
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			managerLog.generarLogErrorGeneral(beanLogin.getCredencial(), this.getClass(), "reporteReceta",
 					e.getMessage());
-			current.ajax().update(":frmPrincipal");
+			PrimeFaces.current().ajax().update(":frmPrincipal");
 		}
+	}
+	
+	public void cargarExamenes(PerConsulta objConsulta) {
+		objPerConsulta= objConsulta;
+		PrimeFaces.current().ajax().update(":frmExamenes");
+		PrimeFaces.current().executeScript("PF('dlgExamenes').show()");
+	}
+
+	/**
+	 * 
+	 * MÉTODO QUE PERMITE DESCARGAR UN DOCUMENTO
+	 * 
+	 * 
+	 * 
+	 * @param String ruta
+	 * 
+	 */
+
+	public StreamedContent getDescargarDocumentoDtoAdjunto(PerConsulta objConsulta) throws Exception {
+
+		if (objConsulta.getCodigoConsulta() != 0) {
+			objConsulta = managerAtencionMedica.findConsultaById(objConsulta.getCodigoConsulta());
+		}
+
+		String medicacion = "", indicacion = "";
+
+		for (PerReceta receta : objConsulta.getPerRecetas()) {
+			medicacion = medicacion + receta.getMedicamento() + "\n" + "\n";
+			indicacion = indicacion + receta.getIndicacion() + "\n" + "\n";
+		}
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		Map<String, Object> parametros = new HashMap<>();
+		parametros.put("medicacion", medicacion);
+		parametros.put("indicacion", indicacion);
+		parametros.put("ciudad", "Ibarra");
+		parametros.put("fecha", formato.format(objConsulta.getFecha()));
+		parametros.put("paciente", objConsulta.getPerPacienteMedico().getPerPaciente().getPerPersona().getApellidos()
+				+ " " + objConsulta.getPerPacienteMedico().getPerPaciente().getPerPersona().getNombres());
+		parametros.put("edad", ModelUtil.calcularEdad(
+				objConsulta.getPerPacienteMedico().getPerPaciente().getPerPersona().getFechaNacimiento()) + "");
+		objConsulta.setPerCie(managerAtencionMedica.findCIEbyId(objConsulta.getPerCie().getCodigoCie()));
+		parametros.put("cie",
+				objConsulta.getPerCie().getCodigoCie() + " - " + objConsulta.getPerCie().getDescripcion());
+		JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(objConsulta.getPerRecetas());
+		File jasper = new File(beanLogin.getPathReportes() + "receta.jasper");
+		JasperPrint jp = JasperFillManager.fillReport(jasper.getPath(), parametros, ds);
+
+		reportPdf = JasperExportManager.exportReportToPdf(jp);
+
+		StreamedContent download = new DefaultStreamedContent();
+
+		InputStream input = new ByteArrayInputStream(reportPdf);
+		download = DefaultStreamedContent.builder().contentType("application/pdf; charset=UTF-8")
+				.name(objConsulta.getPerPacienteMedico().getPerPaciente().getPerPersona().getApellidos())
+				.stream(() -> input).build();
+		return download;
 
 	}
 
 	public void eliminarReceta(PerReceta objReceta) {
 		objPerConsulta.getPerRecetas().remove(objReceta);
-		current.ajax().update(":frmPrincipal");
+		PrimeFaces.current().ajax().update(":frmPrincipal");
 	}
 
 	public void guardarAtencion() {
 		try {
 			objPerConsulta.setFecha(new Date());
 			managerAtencionMedica.insertPerConsulta(objPerConsulta);
+			objPerPacienteMedico.setFechaUltimaConsulta(new Date());
+			managerAtencionMedica.actualizarPerPacienteMedico(objPerPacienteMedico);
 			inicializarPacientes();
 			JSFUtil.crearMensajeINFO("Consulta finalizada correctamente.");
-			current.ajax().update(":frmPrincipal");
+			PrimeFaces.current().ajax().update(":frmPrincipal");
 		} catch (Exception e) {
 			e.printStackTrace();
 			JSFUtil.crearMensajeERROR(e.getMessage());
@@ -158,9 +316,9 @@ public class FormAtencionMedica implements Serializable {
 			lstPerPacienteMedico = managerAtencionMedica
 					.findAllPacientesByMedico(beanLogin.getCredencial().getObjPerMedico());
 			inicializarPaneles();
-			current.executeInitScript("PF('infUsuario').hide()");
-			current.executeInitScript("PF('infPersonas').hide()");
-			current.ajax().update(":frmPrincipal");
+			PrimeFaces.current().executeInitScript("PF('infUsuario').hide()");
+			PrimeFaces.current().executeInitScript("PF('infPersonas').hide()");
+			PrimeFaces.current().ajax().update(":frmPrincipal");
 			pnlPacientes = true;
 
 		} catch (Exception e) {
@@ -174,8 +332,8 @@ public class FormAtencionMedica implements Serializable {
 		objPerPaciente = new PerPaciente();
 		objPerPaciente.setPerPersona(new PerPersona());
 		objPerPaciente.setPerPacienteMedicos(new ArrayList<PerPacienteMedico>());
-		current.executeInitScript("PF('infUsuario').show()");
-		current.ajax().update(":frmUsuarios");
+		PrimeFaces.current().executeInitScript("PF('infUsuario').show()");
+		PrimeFaces.current().ajax().update(":frmUsuarios");
 	}
 
 	public void cargarDatosPaciente(PerPacienteMedico objPacienteAux) {
@@ -186,7 +344,7 @@ public class FormAtencionMedica implements Serializable {
 			objPerPacienteMedico.setPerPaciente(
 					managerAtencionMedica.findPacienteById(objPerPacienteMedico.getPerPaciente().getCodigoPaciente()));
 			pnlDatosPaciente = true;
-			current.ajax().update(":frmPrincipal");
+			PrimeFaces.current().ajax().update(":frmPrincipal");
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
@@ -262,40 +420,43 @@ public class FormAtencionMedica implements Serializable {
 			formControlUsuariosPerfiles.setObjPersona(
 					managerGestionUsuarios.findPersonaByCedula(objPerPaciente.getPerPersona().getCedula()));
 			if (formControlUsuariosPerfiles.getObjPersona() != null) {
-				if (formControlUsuariosPerfiles.getObjPersona().getPerPaciente() != null) {
-					objPerPaciente = managerAtencionMedica.findPacienteById(
-							formControlUsuariosPerfiles.getObjPersona().getPerPaciente().getCodigoPaciente());
-					current.ajax().update(":frmUsuarios");
-				} else {
+				objPerPaciente = managerAtencionMedica
+						.findPacienteByCedula(formControlUsuariosPerfiles.getObjPersona().getCedula());
+				if (objPerPaciente == null) {
+					objPerPaciente = new PerPaciente();
+					objPerPaciente.setPerPacienteMedicos(new ArrayList<PerPacienteMedico>());
 					objPerPaciente.setPerPersona(formControlUsuariosPerfiles.getObjPersona());
 					JSFUtil.crearMensajeINFO("Busqueda correcta.");
-					current.ajax().update(":frmUsuarios");
+					PrimeFaces.current().ajax().update(":frmUsuarios");
+				} else {
+					JSFUtil.crearMensajeINFO("Busqueda correcta.");
+					PrimeFaces.current().ajax().update(":frmUsuarios");
 				}
-
 			} else {
 				ModelUtil.verificarCedulaEcuador(objPerPaciente.getPerPersona().getCedula());
 				JSFUtil.crearMensajeWARN("Persona no existe.");
 				formControlUsuariosPerfiles.setObjPersona(new PerPersona());
 				formControlUsuariosPerfiles.getObjPersona().setCedula(objPerPaciente.getPerPersona().getCedula());
-				current.executeInitScript("PF('infPersonas').show()");
-				current.executeInitScript("PF('infUsuario').hide()");
-				current.ajax().update(":frmPersonas");
+				PrimeFaces.current().executeInitScript("PF('infPersonas').show()");
+				PrimeFaces.current().executeInitScript("PF('infUsuario').hide()");
+				PrimeFaces.current().ajax().update(":frmPersonas");
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			JSFUtil.crearMensajeERROR(e.getMessage());
 		}
-		current.ajax().update(":frmPrincipal:growl");
+		PrimeFaces.current().ajax().update(":frmPrincipal:growl");
 	}
 
 	public StreamedContent getReport() {
-		if (reportPdf != null) {
-			InputStream fis = new ByteArrayInputStream(reportPdf);
-			return DefaultStreamedContent.builder().contentType("application/pdf; charset=UTF-8").name("miArchivo.pdf")
-					.stream(() -> fis).build();
+		if (reportPdf == null || reportPdf.length == 0) {
+			return null;
 		}
-		return null;
+
+		return DefaultStreamedContent.builder().contentType("application/pdf").name("miArchivo.pdf")
+				.stream(() -> new ByteArrayInputStream(reportPdf)) // <-- NUEVO stream cada vez
+				.build();
 	}
 
 	public PerPaciente getObjPerPaciente() {
@@ -392,6 +553,46 @@ public class FormAtencionMedica implements Serializable {
 
 	public static void setReportPdf(byte[] reportPdf) {
 		FormAtencionMedica.reportPdf = reportPdf;
+	}
+
+	public List<PerCie> getLstPerCies() {
+		return lstPerCies;
+	}
+
+	public void setLstPerCies(List<PerCie> lstPerCies) {
+		this.lstPerCies = lstPerCies;
+	}
+
+	public List<PerTipoPatologia> getLstTipoPatologias() {
+		return lstTipoPatologias;
+	}
+
+	public void setLstTipoPatologias(List<PerTipoPatologia> lstTipoPatologias) {
+		this.lstTipoPatologias = lstTipoPatologias;
+	}
+
+	public PerPatologia getObjPerPatologia() {
+		return objPerPatologia;
+	}
+
+	public void setObjPerPatologia(PerPatologia objPerPatologia) {
+		this.objPerPatologia = objPerPatologia;
+	}
+
+	public List<PerTipoExamenComple> getLstPerTipoExamenComples() {
+		return lstPerTipoExamenComples;
+	}
+
+	public void setLstPerTipoExamenComples(List<PerTipoExamenComple> lstPerTipoExamenComples) {
+		this.lstPerTipoExamenComples = lstPerTipoExamenComples;
+	}
+
+	public PerExamenComplementario getObjPerExamenComplementario() {
+		return objPerExamenComplementario;
+	}
+
+	public void setObjPerExamenComplementario(PerExamenComplementario objPerExamenComplementario) {
+		this.objPerExamenComplementario = objPerExamenComplementario;
 	}
 
 }

@@ -7,12 +7,16 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
+import ec.com.model.dao.entity.PerCie;
 import ec.com.model.dao.entity.PerConsulta;
+import ec.com.model.dao.entity.PerExamenComplementario;
 import ec.com.model.dao.entity.PerMedico;
 import ec.com.model.dao.entity.PerPaciente;
 import ec.com.model.dao.entity.PerPacienteMedico;
 import ec.com.model.dao.entity.PerPatologia;
 import ec.com.model.dao.entity.PerReceta;
+import ec.com.model.dao.entity.PerTipoExamenComple;
+import ec.com.model.dao.entity.PerTipoPatologia;
 import ec.com.model.dao.manager.ManagerDAOSegbecom;
 
 /**
@@ -108,6 +112,9 @@ public class ManagerAtencionMedica {
 			if (objPerPacienteMedico != null) {
 				for (PerConsulta iterable_element : objPerPacienteMedico.getPerConsultas()) {
 					iterable_element.getCodigoConsulta();
+					for (PerExamenComplementario iterator : iterable_element.getPerExamenComplementarios()) {
+						iterator.getCodExamenComplementario();
+					}
 				}
 			}
 			return objPerPacienteMedico;
@@ -137,6 +144,72 @@ public class ManagerAtencionMedica {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception("Error al buscar PerConsulta. " + e.getMessage());
+		}
+	}
+
+	public List<PerCie> fillAllCIE() throws Exception {
+		try {
+			return managerDAOSegbecom.findAll(PerCie.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Error al buscar");
+		}
+	}
+
+	public PerCie findCIEbyId(String codigoCie) throws Exception {
+		return (PerCie) managerDAOSegbecom.findById(PerCie.class, codigoCie);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<PerTipoPatologia> findAllTipoPatologia() throws Exception {
+		try {
+			return managerDAOSegbecom.findAll(PerTipoPatologia.class, "o.tipoPatologia ASC");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Error al buscar PerTipoPatologia");
+		}
+	}
+
+	public PerPaciente findPacienteByCedula(String cedula) throws Exception {
+		try {
+			@SuppressWarnings("unchecked")
+			List<PerPaciente> lstPerPacientes = managerDAOSegbecom.findWhere(PerPaciente.class,
+					"o.perPersona.cedula='" + cedula + "'", null);
+			if (lstPerPacientes.isEmpty())
+				return null;
+			for (PerPaciente perPaciente : lstPerPacientes) {
+				for (PerPacienteMedico perPaciente2 : perPaciente.getPerPacienteMedicos()) {
+					perPaciente2.getCodigoPacienteMedico();
+				}
+			}
+			return lstPerPacientes.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Error al buscar paciente");
+		}
+	}
+
+	public void actualizarPerPacienteMedico(PerPacienteMedico objPerPacienteMedico) throws Exception {
+		try {
+			managerDAOSegbecom.actualizar(objPerPacienteMedico);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Error al actualizar fecha ultima consulta.");
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<PerTipoExamenComple> findAllPerTipoExamenComples() throws Exception {
+		return managerDAOSegbecom.findAll(PerTipoExamenComple.class, "o.tipoExamenComplementario ASC");
+	}
+
+	public PerTipoExamenComple findPerTipoExamenCompleById(long codigoTipoExamComple) throws Exception {
+		try {
+			return (PerTipoExamenComple) managerDAOSegbecom.findById(PerTipoExamenComple.class, codigoTipoExamComple);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Error al buscar PerTipoExamenComple");
 		}
 	}
 

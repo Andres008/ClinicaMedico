@@ -78,13 +78,11 @@
 					</p:outputPanel>
 					<p:separator />
 					<p:commandButton icon="ui-icon-plus" value="Nueva Consulta"
-						actionListener="#{formAtencionMedica.nuevaConsulta()}"
+						actionListener="#{formAtencionMedica.inicializarNuevaConsulta()}"
 						styleClass="rounded-button mr-2 mb-2">
-						<p:confirm message="Esta seguro de crear una nueva consulta?"
-							header="Confirmación" icon="ui-icon-alert" />
 					</p:commandButton>
 					<p:separator />
-					<p:tabView>
+					<p:tabView id="tvPaciente">
 						<p:tab title="Datos Personales">
 							<p:panelGrid columns="6" styleClass="ui-noborder">
 								<p:outputLabel value="Cédula" style="font-weight: bold;" />
@@ -118,7 +116,29 @@
 
 							</p:panelGrid>
 						</p:tab>
-						<p:tab title="Patologías">
+						<p:tab title="Patologías" id="tabPatologia">
+							<p:panelGrid columns="5" styleClass="ui-noborder">
+								<p:outputLabel value="Patología" style="font-weight: bold;"
+									rendered="true" />
+								<p:selectOneMenu style="width:100%" rendered="true"
+									value="#{formAtencionMedica.objPerPatologia.perTipoPatologia.codigoTipoPatologia}"
+									filter="true" filterMatchMode="contains" autoWidth="false">
+									<f:selectItem itemLabel="Tipo Patología"
+										noSelectionOption="true" />
+									<f:selectItems value="#{formAtencionMedica.lstTipoPatologias}"
+										var="cie" itemValue="#{cie.codigoTipoPatologia}"
+										itemLabel="#{cie.tipoPatologia}" />
+								</p:selectOneMenu>
+								<p:outputLabel value="Descripción" style="font-weight: bold;"
+									rendered="true" />
+								<p:inputTextarea
+									value="#{formAtencionMedica.objPerPatologia.descripcion}"
+									rows="1" autoResize="true" />
+								<p:commandButton icon="ui-icon-plus" value="Agregar"
+									actionListener="#{formAtencionMedica.agregarPatologia()}"
+									styleClass="rounded-button mr-2 mb-2" />
+							</p:panelGrid>
+							<p:separator />
 							<p:dataTable var="dato" paginator="true" filterEvent="enter"
 								id="tblPatologia" emptyMessage="No existen datos."
 								styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
@@ -135,15 +155,26 @@
 							</p:dataTable>
 						</p:tab>
 						<p:tab title="Consultas Realizadas">
-							<p:dataTable var="dato" paginator="true" filterEvent="enter"
+							<p:dataTable var="dato" paginator="true" filterEvent="enter" sortBy="#{dato.fecha}" sortOrder="descending"
 								id="tblConsultas" emptyMessage="No existen datos."
 								styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
 								value="#{formAtencionMedica.objPerPacienteMedico.perConsultas}">
 								<p:column headerText="Acciones" width="80">
-									<p:commandButton icon="ui-icon-document" title="Ver receta"
-										actionListener="#{formAtencionMedica.reporteReceta(dato)}"
-										styleClass="rounded-button ui-button-outlined mr-2 mb-2">
-									</p:commandButton>
+									<p:panelGrid columns="5" styleClass="ui-noborder">
+										<p:commandButton process="@this" global="false"
+											styleClass="rounded-button ui-button-outlined"
+											icon="ui-icon-document" title="Ver receta" ajax="false"
+											onclick="PrimeFaces.monitorDownload(showStatus, hideStatus)">
+											<p:fileDownload
+												value="#{formAtencionMedica.getDescargarDocumentoDtoAdjunto(dato)}" />
+										</p:commandButton>
+										<p:commandButton process="@this" global="false"
+											styleClass="rounded-button ui-button-outlined"
+											icon="ui-icon-clipboard" title="Ver Examenes"
+											actionListener="#{formAtencionMedica.cargarExamenes(dato)}">
+										</p:commandButton>
+									</p:panelGrid>
+
 								</p:column>
 								<p:column headerText="Fecha Consulta">
 									<p:outputLabel value="#{dato.fecha}">
@@ -169,11 +200,59 @@
 							header="Confirmación" icon="ui-icon-alert" />
 					</p:commandButton>
 					<p:separator />
-					<p:tabView>
-						<p:tab title="Examenes Complementarios"></p:tab>
-						<p:tab title="Receta">
+					<p:tabView id="tvComplementario">
+						<p:tab title="Examenes Complementarios" id="tabComplementario">
 							<p:panelGrid columns="5" styleClass="ui-noborder">
-								<p:outputLabel value="Medicamente" style="font-weight: bold;" />
+								<p:outputLabel value="Tipo Examen" style="font-weight: bold;" />
+								<p:selectOneMenu style="width:100%"
+									value="#{formAtencionMedica.objPerExamenComplementario.perTipoExamenComple.codigoTipoExamComple}"
+									filter="true" filterMatchMode="contains" autoWidth="false">
+									<f:selectItem itemLabel="Seleccione Tipo Examen"
+										noSelectionOption="true" />
+									<f:selectItems
+										value="#{formAtencionMedica.lstPerTipoExamenComples}"
+										var="cie" itemValue="#{cie.codigoTipoExamComple}"
+										itemLabel="#{cie.tipoExamenComplementario}" />
+								</p:selectOneMenu>
+								<p:outputLabel value="Valor" style="font-weight: bold;" />
+								<p:inputTextarea rows="1" autoResize="true"
+									value="#{formAtencionMedica.objPerExamenComplementario.valor}" />
+								<p:commandButton icon="ui-icon-plus" value="Agregar"
+									actionListener="#{formAtencionMedica.agregarExamenComplementario()}"
+									styleClass="rounded-button mr-2 mb-2" />
+							</p:panelGrid>
+							<p:separator />
+							<p:dataTable var="dato" paginator="true" filterEvent="enter"
+								id="tblComplementario" emptyMessage="No existen datos."
+								styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
+								value="#{formAtencionMedica.objPerConsulta.perExamenComplementarios}">
+								<p:column headerText="Examen"
+									filterBy="#{dato.perTipoExamenComple.tipoExamenComplementario}"
+									filterMatchMode="contains">
+									<p:outputLabel
+										value="#{dato.perTipoExamenComple.tipoExamenComplementario}" />
+								</p:column>
+								<p:column headerText="Valor">
+									<p:outputLabel value="#{dato.valor}" />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+
+						<p:tab title="Receta">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:outputLabel value="CIE" style="font-weight: bold;" />
+								<p:selectOneMenu style="width:100%"
+									value="#{formAtencionMedica.objPerConsulta.perCie.codigoCie}"
+									filter="true" filterMatchMode="contains" autoWidth="false">
+									<f:selectItem itemLabel="Seleccione CIE"
+										noSelectionOption="true" />
+									<f:selectItems value="#{formAtencionMedica.lstPerCies}"
+										var="cie" itemValue="#{cie.codigoCie}"
+										itemLabel="#{cie.codigoCie} #{cie.descripcion}" />
+								</p:selectOneMenu>
+							</p:panelGrid>
+							<p:panelGrid columns="5" styleClass="ui-noborder">
+								<p:outputLabel value="Medicamento" style="font-weight: bold;" />
 								<p:inputTextarea
 									value="#{formAtencionMedica.objPerReceta.medicamento}" rows="1"
 									autoResize="true" />
@@ -185,9 +264,13 @@
 									styleClass="rounded-button mr-2 mb-2" />
 							</p:panelGrid>
 							<p:separator />
-							<p:commandButton icon="ui-icon-plus" value="Ver Receta"
-								actionListener="#{formAtencionMedica.reporteReceta(formAtencionMedica.objPerConsulta)}"
-								styleClass="rounded-button mr-2 mb-2" />
+							<p:commandButton process="@this" global="false"
+								styleClass="rounded-button ui-button-outlined"
+								icon="ui-icon-document" title="Ver receta" ajax="false"
+								onclick="PrimeFaces.monitorDownload(showStatus, hideStatus)">
+								<p:fileDownload
+									value="#{formAtencionMedica.getDescargarDocumentoDtoAdjunto(formAtencionMedica.objPerConsulta)}" />
+							</p:commandButton>
 							<p:separator />
 							<p:dataTable var="dato" paginator="true" filterEvent="enter"
 								id="tblConsultas" emptyMessage="No existen datos."
@@ -270,17 +353,17 @@
 						<p:outputLabel value="Apellidos" style="font-weight: bold;" />
 						<p:inputText
 							value="#{formAtencionMedica.formControlUsuariosPerfiles.objPersona.apellidos}"
-							size="40" />
+							size="40" style="text-transform: uppercase;" />
 						<p:outputLabel value="Nombres" style="font-weight: bold;" />
 						<p:inputText
 							value="#{formAtencionMedica.formControlUsuariosPerfiles.objPersona.nombres}"
-							size="40" />
+							size="40" style="text-transform: uppercase;" />
 						<p:outputLabel value="Correo Electrónico"
 							style="font-weight: bold;" />
 						<p:inputText
 							value="#{formAtencionMedica.formControlUsuariosPerfiles.objPersona.correo}"
-							size="40" />
-						<p:outputLabel value="Telefono" style="font-weight: bold;" />
+							size="40" style="text-transform: lowercase;" />
+						<p:outputLabel value="Teléfono" style="font-weight: bold;" />
 						<p:inputText
 							oninput="this.value=this.value.replace(/[^0-9]/g,'');"
 							placeholder="Ingrese un número de telefo"
@@ -316,13 +399,62 @@
 				</p:confirmDialog>
 			</h:form>
 		</p:dialog>
-		<h:form id="frmReporte">
-			<p:dialog header="Adjunto" widgetVar="dlgReporte" modal="true"
-				position="top" width="85%" resizable="false" closable="true">
-				<p:media cache="false" value="#{formAtencionMedica.report}"
-					width="85%" height="500" player="pdf" />
 
-			</p:dialog>
-		</h:form>
+
+
+
+		<p:dialog header="Nueva Consulta" widgetVar="infNuevaConsulta"
+			id="infNuevaConsulta" modal="false" position="center"
+			showEffect="fade" hideEffect="fade" resizable="false" width="90%">
+			<h:form id="frmNuevaConsulta">
+				<div align="center">
+					<p:panelGrid columns="4" styleClass="ui-noborder" style="width:90%">
+						<p:outputLabel value="Motívo" style="font-weight: bold;" />
+						<p:inputTextarea
+							value="#{formAtencionMedica.objPerConsulta.motivo}" size="15"
+							rows="1" autoResize="true" />
+						<p:outputLabel value="Observación" style="font-weight: bold;" />
+						<p:inputTextarea
+							value="#{formAtencionMedica.objPerConsulta.observacion}"
+							size="15" rows="1" autoResize="true" />
+					</p:panelGrid>
+					<p:commandButton icon="ui-icon-plus" value="Nueva Consulta"
+						actionListener="#{formAtencionMedica.nuevaConsulta()}"
+						styleClass="rounded-button mr-2 mb-2">
+						<p:confirm message="Esta seguro de crear una nueva consulta?"
+							header="Confirmación" icon="ui-icon-alert" />
+					</p:commandButton>
+				</div>
+			</h:form>
+		</p:dialog>
+		<p:dialog header="Adjunto" widgetVar="dlgReporte" modal="true"
+			position="top" width="85%" resizable="false" closable="true">
+
+			<h:form id="frmReporte">
+				<p:media id="mediaReporte" value="#{formAtencionMedica.report}"
+					width="100%" height="500" player="pdf" />
+			</h:form>
+
+		</p:dialog>
+
+		<p:dialog header="Examenes" widgetVar="dlgExamenes" modal="true"
+			position="top" width="85%" resizable="false" closable="true">
+			<h:form id="frmExamenes">
+				<p:dataTable var="dato" paginator="true" filterEvent="enter"
+					id="tblConsultas" emptyMessage="No existen datos."
+					styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
+					value="#{formAtencionMedica.objPerConsulta.perExamenComplementarios}">
+					<p:column headerText="Examen"
+						filterBy="#{dato.perTipoExamenComple.tipoExamenComplementario}"
+						filterMatchMode="contains">
+						<p:outputLabel
+							value="#{dato.perTipoExamenComple.tipoExamenComplementario}" />
+					</p:column>
+					<p:column headerText="Valor">
+						<p:outputLabel value="#{dato.valor}" />
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 </ui:composition>

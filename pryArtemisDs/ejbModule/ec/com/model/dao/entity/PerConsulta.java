@@ -27,6 +27,11 @@ public class PerConsulta implements Serializable {
 	private String motivo;
 
 	private String observacion;
+	
+	//bi-directional many-to-one association to PerCie
+	@ManyToOne
+	@JoinColumn(name="codigo_cie")
+	private PerCie perCie;
 
 	// bi-directional many-to-one association to PerPacienteMedico
 	@ManyToOne
@@ -34,7 +39,7 @@ public class PerConsulta implements Serializable {
 	private PerPacienteMedico perPacienteMedico;
 
 	// bi-directional many-to-one association to PerExamenComplementario
-	@OneToMany(mappedBy = "perConsulta")
+	@OneToMany(mappedBy = "perConsulta", cascade = CascadeType.ALL)
 	private List<PerExamenComplementario> perExamenComplementarios;
 
 	// bi-directional many-to-one association to PerReceta
@@ -126,6 +131,14 @@ public class PerConsulta implements Serializable {
 		perReceta.setPerConsulta(null);
 
 		return perReceta;
+	}
+
+	public PerCie getPerCie() {
+		return perCie;
+	}
+
+	public void setPerCie(PerCie perCie) {
+		this.perCie = perCie;
 	}
 
 }

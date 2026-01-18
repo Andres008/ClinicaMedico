@@ -22,8 +22,6 @@ public class PerMedico implements Serializable {
 	@Column(name="codigo_medico")
 	private long codigoMedico;
 
-	private String cie;
-
 	private String clave;
 
 	private String estado;
@@ -71,14 +69,7 @@ public class PerMedico implements Serializable {
 		this.codigoMedico = codigoMedico;
 	}
 
-	public String getCie() {
-		return this.cie;
-	}
-
-	public void setCie(String cie) {
-		this.cie = cie;
-	}
-
+	
 	public String getClave() {
 		return this.clave;
 	}

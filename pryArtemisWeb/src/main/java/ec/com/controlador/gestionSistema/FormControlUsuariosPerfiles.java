@@ -165,13 +165,12 @@ public class FormControlUsuariosPerfiles implements Serializable {
 					|| ModelUtil.contieneCaracteresNoNumericos(objPersona.getCelular()))
 				throw new Exception("Los números telefonicos contienen caracteres no numéricos");
 			if (ModelUtil.isEmpty(objPersona.getNombres()) || ModelUtil.isEmpty(objPersona.getApellidos()))
-				throw new Exception("Catos personales insuficientes");
+				throw new Exception("Datos personales insuficientes");
 			objPersona.setApellidos(ModelUtil.cambiarMayusculas(objPersona.getApellidos()));
 			objPersona.setNombres(ModelUtil.cambiarMayusculas(objPersona.getNombres()));
 			objPersona.setCorreo(ModelUtil.cambiarMinusculas(objPersona.getCorreo()));
 			managerGestionUsuarios.ingresarPersona(objPersona);
 			inicializarUsuarios();
-			objPerMedico.setPerPersona(objPersona);
 			objPerMedico.setPerPersona(objPersona);
 			current.executeInitScript("PF('infPersonas').hide()");
 			current.executeInitScript("PF('infUsuario').show()");

@@ -16,8 +16,6 @@ public class PerPaciente implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "PER_PACIENTE_CODIGOPACIENTE_GENERATOR", sequenceName = "SEQ_PER_PACIENTE", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PER_PACIENTE_CODIGOPACIENTE_GENERATOR")
 	@Column(name = "codigo_paciente")
 	private long codigoPaciente;
 
@@ -27,8 +25,8 @@ public class PerPaciente implements Serializable {
 
 	private String sexo;
 
-	// bi-directional one-to-one association to PerPersona
-	@OneToOne
+	// bi-directional many-to-one association to PerPersona
+	@ManyToOne
 	@JoinColumn(name = "cedula")
 	private PerPersona perPersona;
 

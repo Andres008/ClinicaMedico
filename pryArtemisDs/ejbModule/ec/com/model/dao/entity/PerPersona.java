@@ -17,8 +17,6 @@ public class PerPersona implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="PER_PERSONAS_CEDULA_GENERATOR", sequenceName="SEQ_PER_PERSONAS", allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="PER_PERSONAS_CEDULA_GENERATOR")
 	private String cedula;
 
 	private String apellidos;
@@ -41,9 +39,9 @@ public class PerPersona implements Serializable {
 	@OneToMany(mappedBy="perPersona")
 	private List<PerMedico> perMedicos;
 
-	//bi-directional one-to-one association to PerPaciente
-	@OneToOne(mappedBy="perPersona")
-	private PerPaciente perPaciente;
+	//bi-directional many-to-one association to PerPaciente
+	@OneToMany(mappedBy="perPersona")
+	private List<PerPaciente> perPacientes;
 
 	public PerPersona() {
 	}
@@ -134,12 +132,26 @@ public class PerPersona implements Serializable {
 		return perMedico;
 	}
 
-	public PerPaciente getPerPaciente() {
-		return this.perPaciente;
+	public List<PerPaciente> getPerPacientes() {
+		return this.perPacientes;
 	}
 
-	public void setPerPaciente(PerPaciente perPaciente) {
-		this.perPaciente = perPaciente;
+	public void setPerPacientes(List<PerPaciente> perPacientes) {
+		this.perPacientes = perPacientes;
+	}
+
+	public PerPaciente addPerPaciente(PerPaciente perPaciente) {
+		getPerPacientes().add(perPaciente);
+		perPaciente.setPerPersona(this);
+
+		return perPaciente;
+	}
+
+	public PerPaciente removePerPaciente(PerPaciente perPaciente) {
+		getPerPacientes().remove(perPaciente);
+		perPaciente.setPerPersona(null);
+
+		return perPaciente;
 	}
 
 }
