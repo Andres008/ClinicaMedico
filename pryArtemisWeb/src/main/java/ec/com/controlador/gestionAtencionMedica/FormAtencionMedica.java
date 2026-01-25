@@ -350,6 +350,12 @@ public class FormAtencionMedica implements Serializable {
 		}
 
 	}
+	
+	public void cargarDatosPacienteModificacion(PerPacienteMedico objPacienteAux) {
+		formControlUsuariosPerfiles.cargarDatosPersona(objPacienteAux.getPerPaciente().getPerPersona());
+		PrimeFaces.current().executeInitScript("PF('dlgDatoPersonal').show()");
+		PrimeFaces.current().ajax().update(":frmDatoPersonal");
+	}
 
 	public void guardarPaciente() {
 		if (blIbgreso)

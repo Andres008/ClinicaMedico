@@ -33,13 +33,19 @@
 						id="tblUsuario" emptyMessage="No existen datos."
 						styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
 						value="#{formAtencionMedica.lstPerPacienteMedico}">
-						<p:column headerText="Acciones" width="80">
-							<p:commandButton icon="ui-icon-person" title="Datos Paciente"
-								actionListener="#{formAtencionMedica.cargarDatosPaciente(usuario)}"
-								styleClass="rounded-button ui-button-outlined mr-2 mb-2">
-							</p:commandButton>
+						<p:column headerText="Acciones" width="70">
+							<p:panelGrid columns="2" styleClass="ui-noborder">
+								<p:commandButton icon="ui-icon-person" title="Datos Paciente"
+									actionListener="#{formAtencionMedica.cargarDatosPaciente(usuario)}"
+									styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+								</p:commandButton>
+								<p:commandButton icon="ui-icon-pencil" title="Datos Paciente"
+									actionListener="#{formAtencionMedica.cargarDatosPacienteModificacion(usuario)}"
+									styleClass="rounded-button ui-button-outlined mr-2 mb-2">
+								</p:commandButton>
+							</p:panelGrid>
 						</p:column>
-						<p:column headerText="Cédula"
+						<p:column headerText="Cédula" width="50"
 							filterBy="#{usuario.perPaciente.perPersona.cedula}"
 							filterMatchMode="contains">
 							<p:outputLabel value="#{usuario.perPaciente.perPersona.cedula}" />
@@ -55,7 +61,7 @@
 							filterMatchMode="contains">
 							<p:outputLabel value="#{usuario.perPaciente.perPersona.nombres}" />
 						</p:column>
-						<p:column headerText="Fecha Nacimiento">
+						<p:column headerText="Fecha Nacimiento" width="70">
 							<p:outputLabel
 								value="#{usuario.perPaciente.perPersona.fechaNacimiento}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
@@ -65,8 +71,18 @@
 							<p:outputLabel
 								value="#{formAtencionMedica.edadPaciente(usuario.perPaciente.perPersona.fechaNacimiento)}" />
 						</p:column>
-						<p:column headerText="Sexo">
+						<p:column headerText="Sexo" width="50">
 							<p:outputLabel value="#{usuario.perPaciente.sexo}" />
+						</p:column>
+						<p:column headerText="Dirección" width="60">
+							<p:outputLabel
+								value="#{usuario.perPaciente.perPersona.direccion}" />
+						</p:column>
+						<p:column headerText="Celular" width="50">
+							<p:outputLabel value="#{usuario.perPaciente.perPersona.celular}" />
+						</p:column>
+						<p:column headerText="Correo">
+							<p:outputLabel value="#{usuario.perPaciente.perPersona.correo}" />
 						</p:column>
 					</p:dataTable>
 				</p:panel>
@@ -155,8 +171,9 @@
 							</p:dataTable>
 						</p:tab>
 						<p:tab title="Consultas Realizadas">
-							<p:dataTable var="dato" paginator="true" filterEvent="enter" sortBy="#{dato.fecha}" sortOrder="descending"
-								id="tblConsultas" emptyMessage="No existen datos."
+							<p:dataTable var="dato" paginator="true" filterEvent="enter"
+								sortBy="#{dato.fecha}" sortOrder="descending" id="tblConsultas"
+								emptyMessage="No existen datos."
 								styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
 								value="#{formAtencionMedica.objPerPacienteMedico.perConsultas}">
 								<p:column headerText="Acciones" width="80">

@@ -8,6 +8,7 @@ import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
 
+import ec.com.controlador.gestionAtencionMedica.FormAtencionMedica;
 import ec.com.controlador.sesion.BeanLogin;
 import ec.com.model.auditoria.ManagerLog;
 import ec.com.model.dao.entity.AutMenu;
@@ -34,6 +35,9 @@ public class FormControlUsuariosPerfiles implements Serializable {
 
 	@Inject
 	private BeanLogin beanLogin;
+
+	@Inject
+	private FormAtencionMedica formAtencionMedica;
 
 	@EJB
 	private ManagerGestionUsuarios managerGestionUsuarios;
@@ -143,7 +147,6 @@ public class FormControlUsuariosPerfiles implements Serializable {
 				JSFUtil.crearMensajeWARN("Persona no existe.");
 				objPersona = new PerPersona();
 				objPersona.setCedula(objPerMedico.getPerPersona().getCedula());
-				System.out.println(objPersona.getCedula());
 				current.executeInitScript("PF('infPersonas').show()");
 				current.executeInitScript("PF('infUsuario').hide()");
 				current.ajax().update(":frmPersonas");
@@ -159,6 +162,13 @@ public class FormControlUsuariosPerfiles implements Serializable {
 		current.ajax().update(":frmPrincipal:growl");
 	}
 
+	public void cargarDatosPersona(PerPersona persona) {
+		objPersona = persona;
+		current.executeInitScript("PF('infPersonas').show()");
+		current.executeInitScript("PF('infUsuario').hide()");
+		current.ajax().update(":frmPersonas");
+	}
+
 	public void guardarPersona() {
 		try {
 			if (ModelUtil.contieneCaracteresNoNumericos(objPersona.getTelefono())
@@ -169,13 +179,24 @@ public class FormControlUsuariosPerfiles implements Serializable {
 			objPersona.setApellidos(ModelUtil.cambiarMayusculas(objPersona.getApellidos()));
 			objPersona.setNombres(ModelUtil.cambiarMayusculas(objPersona.getNombres()));
 			objPersona.setCorreo(ModelUtil.cambiarMinusculas(objPersona.getCorreo()));
-			managerGestionUsuarios.ingresarPersona(objPersona);
-			inicializarUsuarios();
-			objPerMedico.setPerPersona(objPersona);
-			current.executeInitScript("PF('infPersonas').hide()");
-			current.executeInitScript("PF('infUsuario').show()");
-			current.ajax().update(":frmUsuarios");
-			JSFUtil.crearMensajeINFO("Ingreso Correcto.");
+			if (managerGestionUsuarios.findPersonaByCedula(objPersona.getCedula()) == null) {
+				managerGestionUsuarios.ingresarPersona(objPersona);
+				inicializarUsuarios();
+				objPerMedico.setPerPersona(objPersona);
+				current.executeInitScript("PF('infPersonas').hide()");
+				current.executeInitScript("PF('infUsuario').show()");
+				current.ajax().update(":frmUsuarios");
+				JSFUtil.crearMensajeINFO("Ingreso Correcto.");
+			} else {
+				managerGestionUsuarios.actualizarPersona(objPersona);
+				inicializarUsuarios();
+				objPerMedico.setPerPersona(objPersona);
+				current.executeInitScript("PF('infPersonas').hide()");
+				current.ajax().update(":frmUsuarios");
+				JSFUtil.crearMensajeINFO("Actualización Correcta.");
+				formAtencionMedica.inicializarPacientes();
+			}
+
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
 			e.printStackTrace();
@@ -191,8 +212,6 @@ public class FormControlUsuariosPerfiles implements Serializable {
 		current.executeInitScript("PF('infUsuario').show()");
 		current.ajax().update(":frmUsuarios");
 	}
-	
-
 
 	public void inicializarNuevoRol() {
 		objAutRol = new AutRol();

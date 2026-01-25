@@ -215,4 +215,13 @@ public class ManagerGestionUsuarios {
 		}
 	}
 
+	public void actualizarPersona(PerPersona objPersona) throws Exception {
+	try {
+		managerDAOSegbecom.actualizar(objPersona);
+	} catch (Exception e) {
+		e.printStackTrace();
+		throw new Exception("Error al actualizar información.");
+	}		
+	}
+
 }
