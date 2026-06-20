@@ -9,6 +9,8 @@
 	<parameter name="paciente" class="java.lang.String"/>
 	<parameter name="edad" class="java.lang.String"/>
 	<parameter name="cie" class="java.lang.String"/>
+	<parameter name="cabecera" class="java.lang.String"/>
+	<parameter name="piePagina" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -16,7 +18,7 @@
 		<band height="216">
 			<image>
 				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="800" height="130" uuid="e2f7c7a3-a776-4007-92db-8c68ed0ec79b"/>
-				<imageExpression><![CDATA["D:/acardenas/Desarrollo/Reportes/Receta/cabecera.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{cabecera}]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="8" y="135" width="52" height="15" uuid="58a5e523-ee7f-4896-a946-0232ae0e5117"/>
@@ -164,7 +166,7 @@
 		<band height="61">
 			<image>
 				<reportElement x="0" y="0" width="801" height="61" uuid="692fbc62-5d81-4bfa-a7d8-59d88ecd0908"/>
-				<imageExpression><![CDATA["D:/acardenas/Desarrollo/Reportes/Receta/pieReceta.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{piePagina}]]></imageExpression>
 			</image>
 		</band>
 	</pageFooter>

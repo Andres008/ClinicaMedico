@@ -213,7 +213,7 @@ public class FormAtencionMedica implements Serializable {
 			parametros.put("cie",
 					objConsulta.getPerCie().getCodigoCie() + " - " + objConsulta.getPerCie().getDescripcion());
 			JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(objConsulta.getPerRecetas());
-			File jasper = new File(beanLogin.getPathReportes() + "receta.jasper");
+			File jasper = new File(beanLogin.getPathReporte() + "receta.jasper");
 			JasperPrint jp = JasperFillManager.fillReport(jasper.getPath(), parametros, ds);
 
 			reportPdf = JasperExportManager.exportReportToPdf(jp);
@@ -261,6 +261,8 @@ public class FormAtencionMedica implements Serializable {
 		parametros.put("medicacion", medicacion);
 		parametros.put("indicacion", indicacion);
 		parametros.put("ciudad", "Ibarra");
+		parametros.put("piePagina",beanLogin.getPathReporte()+"pieReceta.png");
+		parametros.put("cabecera",beanLogin.getPathReporte()+"cabecera.png");
 		parametros.put("fecha", formato.format(objConsulta.getFecha()));
 		parametros.put("paciente", objConsulta.getPerPacienteMedico().getPerPaciente().getPerPersona().getApellidos()
 				+ " " + objConsulta.getPerPacienteMedico().getPerPaciente().getPerPersona().getNombres());
@@ -270,7 +272,7 @@ public class FormAtencionMedica implements Serializable {
 		parametros.put("cie",
 				objConsulta.getPerCie().getCodigoCie() + " - " + objConsulta.getPerCie().getDescripcion());
 		JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(objConsulta.getPerRecetas());
-		File jasper = new File(beanLogin.getPathReportes() + "receta.jasper");
+		File jasper = new File(beanLogin.getPathReporte() + "receta.jasper");
 		JasperPrint jp = JasperFillManager.fillReport(jasper.getPath(), parametros, ds);
 
 		reportPdf = JasperExportManager.exportReportToPdf(jp);

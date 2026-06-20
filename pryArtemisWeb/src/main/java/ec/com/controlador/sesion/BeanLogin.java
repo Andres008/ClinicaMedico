@@ -117,7 +117,6 @@ public class BeanLogin implements Serializable {
 
 	}
 
-	
 	public DefaultStreamedContent cargarFotografia() {
 
 		try {
@@ -191,17 +190,27 @@ public class BeanLogin implements Serializable {
 		return null;
 
 	}
-	
-	public String getPathReportes() {
-		String valorPath = "";
-		try {
-			//valorPath = managerParametros.getValorParametro("PATH_REPORTE");
-			valorPath = "D:\\acardenas\\Desarrollo\\Reportes\\Receta\\";
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+	public String getPathReporte() {
+
+		if (ModelUtil.isEmpty(pathReporte)) {
+
+			try {
+
+				pathReporte = managerGestionSistema.buscarValorParametroNombre("PATH_REPORTES");
+
+			} catch (Exception e) {
+
+				// TODO Auto-generated catch block
+
+				e.printStackTrace();
+
+			}
+
 		}
-		return valorPath;
+
+		return pathReporte;
+
 	}
 
 	/*******************************************************************
@@ -342,27 +351,8 @@ public class BeanLogin implements Serializable {
 
 	}
 
-	public String getPathReporte() {
-
-		if (ModelUtil.isEmpty(pathReporte)) {
-
-			try {
-
-				pathReporte = managerGestionSistema.buscarValorParametroNombre("PATH_REPORTES");
-
-			} catch (Exception e) {
-
-				// TODO Auto-generated catch block
-
-				e.printStackTrace();
-
-			}
-
-		}
-
-		return pathReporte;
-
-	}
+	
+	
 
 	public void setPathReporte(String pathReporte) {
 

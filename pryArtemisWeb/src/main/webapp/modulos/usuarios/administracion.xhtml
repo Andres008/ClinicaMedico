@@ -30,7 +30,7 @@
 					<p:dataTable var="usuario" paginator="true" filterEvent="enter"
 						id="tblUsuario" emptyMessage="No existen datos."
 						styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
-						value="#{formControlUsuariosPerfiles.lstAutUsuario}">
+						value="#{formControlUsuariosPerfiles.lstPerMedico}">
 						<p:column headerText="Acciones" width="80">
 							<p:panelGrid columns="2" styleClass="ui-noborder"
 								style="width:90%">
@@ -65,9 +65,9 @@
 							</p:panelGrid>
 
 						</p:column>
-						<p:column headerText="Cédula" filterBy="#{usuario.cedula}"
+						<p:column headerText="Cédula" filterBy="#{usuario.perPersona.cedula}"
 							filterMatchMode="contains">
-							<p:outputLabel value="#{usuario.cedula}" />
+							<p:outputLabel value="#{usuario.perPersona.cedula}" />
 						</p:column>
 						<p:column headerText="Apellidos"
 							filterBy="#{usuario.perPersona.apellidos}"
@@ -109,26 +109,26 @@
 						<p:outputLabel value="Cédula" style="font-weight: bold;" />
 						<p:panelGrid columns="2" styleClass="ui-noborder">
 							<p:inputText
-								value="#{formControlUsuariosPerfiles.objAutUsuario.cedula}"
+								value="#{formControlUsuariosPerfiles.objPerMedico.perPersona.cedula}"
 								disabled="#{!formControlUsuariosPerfiles.blIbgreso}" size="15" />
 							<p:commandButton value="Buscar" icon="ui-icon-search"
 								actionListener="#{formControlUsuariosPerfiles.buscarPersona()}" />
 						</p:panelGrid>
 						<p:outputLabel value="Correo" style="font-weight: bold;" />
 						<p:inputText disabled="true"
-							value="#{formControlUsuariosPerfiles.objAutUsuario.perPersona.correo}"
+							value="#{formControlUsuariosPerfiles.objPerMedico.perPersona.correo}"
 							size="40" />
 						<p:outputLabel value="Apellidos" style="font-weight: bold;" />
 						<p:inputText disabled="true"
-							value="#{formControlUsuariosPerfiles.objAutUsuario.perPersona.apellidos}"
+							value="#{formControlUsuariosPerfiles.objPerMedico.perPersona.apellidos}"
 							size="40" />
 						<p:outputLabel value="Nombre" style="font-weight: bold;" />
 						<p:inputText disabled="true"
-							value="#{formControlUsuariosPerfiles.objAutUsuario.perPersona.nombres}"
+							value="#{formControlUsuariosPerfiles.objPerMedico.perPersona.nombres}"
 							size="40" />
 						<p:outputLabel value="Rol" style="font-weight: bold;" />
 						<p:selectOneMenu
-							value="#{formControlUsuariosPerfiles.objAutUsuario.autRol.codigo}">
+							value="#{formControlUsuariosPerfiles.objPerMedico.autRol.codigo}">
 							<f:selectItem itemLabel="Seleccione Rol" noSelectionOption="true" />
 							<f:selectItems
 								value="#{formControlUsuariosPerfiles.siRolesActivos()}" />

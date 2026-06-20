@@ -141,6 +141,7 @@ public class ManagerDAOSegbecom {
 		else
 			sentenciaSQL = "SELECT o FROM " + clase.getSimpleName() + " o WHERE " + pClausulaWhere + " ORDER BY "
 					+ pOrderBy;
+		//System.out.println(sentenciaSQL);
 		q = em.createQuery(sentenciaSQL);
 		listado = q.getResultList();
 		// managerLog.MostrarLog(this.getClass(),"findWhere",sentenciaSQL);
