@@ -218,7 +218,6 @@ public class FormAtencionMedica implements Serializable {
 
 			reportPdf = JasperExportManager.exportReportToPdf(jp);
 
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 			JSFUtil.crearMensajeERROR(e.getMessage());
@@ -227,9 +226,9 @@ public class FormAtencionMedica implements Serializable {
 			PrimeFaces.current().ajax().update(":frmPrincipal");
 		}
 	}
-	
+
 	public void cargarExamenes(PerConsulta objConsulta) {
-		objPerConsulta= objConsulta;
+		objPerConsulta = objConsulta;
 		PrimeFaces.current().ajax().update(":frmExamenes");
 		PrimeFaces.current().executeScript("PF('dlgExamenes').show()");
 	}
@@ -261,8 +260,8 @@ public class FormAtencionMedica implements Serializable {
 		parametros.put("medicacion", medicacion);
 		parametros.put("indicacion", indicacion);
 		parametros.put("ciudad", "Ibarra");
-		parametros.put("piePagina",beanLogin.getPathReporte()+"pieReceta.png");
-		parametros.put("cabecera",beanLogin.getPathReporte()+"cabecera.png");
+		parametros.put("piePagina", beanLogin.getPathReporte() + "pieReceta.png");
+		parametros.put("cabecera", beanLogin.getPathReporte() + "cabecera.png");
 		parametros.put("fecha", formato.format(objConsulta.getFecha()));
 		parametros.put("paciente", objConsulta.getPerPacienteMedico().getPerPaciente().getPerPersona().getApellidos()
 				+ " " + objConsulta.getPerPacienteMedico().getPerPaciente().getPerPersona().getNombres());
@@ -294,6 +293,11 @@ public class FormAtencionMedica implements Serializable {
 
 	public void guardarAtencion() {
 		try {
+			if ((objPerConsulta.getPerCie() == null || ModelUtil.isEmpty(objPerConsulta.getPerCie().getCodigoCie()))
+					&& objPerConsulta.getPerRecetas().size() > 0)
+				throw new Exception("Es requierido el CIE");
+			if (ModelUtil.isEmpty(objPerConsulta.getPerCie().getCodigoCie()))
+				objPerConsulta.setPerCie(null);
 			objPerConsulta.setFecha(new Date());
 			managerAtencionMedica.insertPerConsulta(objPerConsulta);
 			objPerPacienteMedico.setFechaUltimaConsulta(new Date());
@@ -352,7 +356,7 @@ public class FormAtencionMedica implements Serializable {
 		}
 
 	}
-	
+
 	public void cargarDatosPacienteModificacion(PerPacienteMedico objPacienteAux) {
 		formControlUsuariosPerfiles.cargarDatosPersona(objPacienteAux.getPerPaciente().getPerPersona());
 		PrimeFaces.current().executeInitScript("PF('dlgDatoPersonal').show()");

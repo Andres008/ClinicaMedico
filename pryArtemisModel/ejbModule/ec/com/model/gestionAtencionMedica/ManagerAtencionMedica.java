@@ -115,6 +115,9 @@ public class ManagerAtencionMedica {
 					for (PerExamenComplementario iterator : iterable_element.getPerExamenComplementarios()) {
 						iterator.getCodExamenComplementario();
 					}
+					for( PerReceta receta : iterable_element.getPerRecetas()) {
+						receta.getCodigoReceta();
+					}
 				}
 			}
 			return objPerPacienteMedico;

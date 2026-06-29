@@ -30,7 +30,7 @@
 					</h:commandLink>
 
 					<p:dataTable var="usuario" paginator="true" filterEvent="enter"
-						id="tblUsuario" emptyMessage="No existen datos."
+						id="tblUsuario" emptyMessage="No existen datos." rows="5"
 						styleClass="ui-datatable-striped ui-datatable-sm ui-datatable-gridlines"
 						value="#{formAtencionMedica.lstPerPacienteMedico}">
 						<p:column headerText="Acciones" width="70">
@@ -178,7 +178,7 @@
 								value="#{formAtencionMedica.objPerPacienteMedico.perConsultas}">
 								<p:column headerText="Acciones" width="80">
 									<p:panelGrid columns="5" styleClass="ui-noborder">
-										<p:commandButton process="@this" global="false"
+										<p:commandButton process="@this" global="false" rendered="#{!empty dato.perRecetas}"
 											styleClass="rounded-button ui-button-outlined"
 											icon="ui-icon-document" title="Ver receta" ajax="false"
 											onclick="PrimeFaces.monitorDownload(showStatus, hideStatus)">
