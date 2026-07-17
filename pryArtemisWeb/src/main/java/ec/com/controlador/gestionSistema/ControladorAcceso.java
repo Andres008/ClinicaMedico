@@ -207,6 +207,7 @@ public class ControladorAcceso implements Serializable {
 	 */
 	public void actualizarContrasenia() {
 		try {
+			validarClaveFuerte(objPerMedico.getClave());
 			if (objPerMedico.getClave().equals(objPerMedico.getPerPersona().getCedula()))
 				throw new Exception("La clave no puede ser el número de cedula");
 			objPerMedico.setClave(ModelUtil.md5(objPerMedico.getClave()));
@@ -221,6 +222,22 @@ public class ControladorAcceso implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+	 public static void validarClaveFuerte(String clave) {
+
+	        if (clave == null
+	                || clave.length() < 8
+	                || !clave.matches(".*[A-Z].*")
+	                || !clave.matches(".*[a-z].*")
+	                || !clave.matches(".*\\d.*")
+	                || !clave.matches(".*[^a-zA-Z0-9].*")) {
+
+	            throw new IllegalArgumentException(
+	                "La clave debe tener al menos 8 caracteres e incluir al menos "
+	                + "una letra mayúscula, una letra minúscula, un número y un carácter especial."
+	            );
+	        }
+	    }
 
 	public StreamedContent getFile() {
 		return DefaultStreamedContent.builder().name("GuiaUsuario.pdf").contentType("application/pdf")

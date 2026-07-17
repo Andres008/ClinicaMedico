@@ -262,6 +262,9 @@ public class FormControlUsuariosPerfiles implements Serializable {
 
 	public void inactivarUsuario(PerMedico auxPerMedico) {
 		try {
+			if (auxPerMedico.getPerPersona().getCedula()
+					.equals(beanLogin.getCredencial().getObjPerMedico().getPerPersona().getCedula()))
+				throw new Exception("No se puede inactivar su propio usuario.");
 			auxPerMedico.setFechaBaja(new Date());
 			auxPerMedico.setEstado("I");
 			managerGestionUsuarios.actualizarUsuario(auxPerMedico);
@@ -272,6 +275,7 @@ public class FormControlUsuariosPerfiles implements Serializable {
 			current.ajax().update(":frmPrincipal");
 		} catch (Exception e) {
 			JSFUtil.crearMensajeERROR(e.getMessage());
+			current.ajax().update(":frmPrincipal");
 			e.printStackTrace();
 		}
 	}

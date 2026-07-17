@@ -41,7 +41,7 @@ public class ManagerGestionSistema {
 		if (usuario == null)
 			throw new Exception("Usuario no existe, verifique su código.");
 
-		if (usuario.getEstado().equalsIgnoreCase("N"))
+		if (usuario.getEstado().equalsIgnoreCase("I"))
 			throw new Exception("El usuario no está activo.");
 
 		if (!pClave.equals(usuario.getClave()))

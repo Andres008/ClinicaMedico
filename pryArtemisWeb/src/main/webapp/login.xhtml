@@ -78,7 +78,7 @@
 						<p:outputLabel for="pwd1" styleClass="p-col-fixed"
 							rendered="#{controladorAcceso.cambiosContrasenia}"
 							style="width:100px" value="Contraseña" />
-						<p:password id="pwd1"
+						<p:password id="pwd1"  toggleMask="true" 
 							rendered="#{controladorAcceso.cambiosContrasenia}"
 							value="#{controladorAcceso.objPerMedico.clave}"
 							placeholder="Contraseña" match="pwd2" label="Password 1"
@@ -93,14 +93,14 @@
 					<div class="ui-g-12 ui-lg-12 ui-md-12">
 						<h:outputText value="Contraseña"
 							rendered="#{!controladorAcceso.cambiosContrasenia}" />
-						<p:password placeholder="Password" feedback="false"
+						<p:password placeholder="Password" feedback="false" toggleMask="true"
 							validatorMessage="Contraseñas no son iguales"
 							rendered="#{!controladorAcceso.cambiosContrasenia}"
 							value="#{controladorAcceso.clave}" />
 						<p:outputLabel for="pwd2" styleClass="p-col-fixed"
 							rendered="#{controladorAcceso.cambiosContrasenia}"
 							style="width:100px" value="Repita Contraseña" />
-						<p:password id="pwd2"
+						<p:password id="pwd2"  toggleMask="true" 
 							validatorMessage="Contraseñas no son iguales"
 							rendered="#{controladorAcceso.cambiosContrasenia}"
 							value="#{controladorAcceso.objPerMedico.clave}"
